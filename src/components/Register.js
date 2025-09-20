@@ -20,7 +20,7 @@ const Register = () => {
     };
 
     return (
-        <div className="container d-flex justify-content-center align-items-center bgpic" style={{ minHeight: "90vh" }}>
+        <div className="container-fluid d-flex justify-content-center align-items-center bgpic" style={{ minHeight: "90vh" }}>
             <div className="card shadow-lg p-3 w-50">
                 <h2 className="text-center text-danger fw-bold mb-3">Create an Account</h2>
                 <form onSubmit={handleSubmit}>

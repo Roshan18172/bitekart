@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./styles..css";
 
 const AddRestaurant = () => {
     const [form, setForm] = useState({
@@ -25,10 +26,10 @@ const AddRestaurant = () => {
     };
 
     return (
-        <div className="container d-flex justify-content-center align-items-center" style={{ minHeight: "90vh" }}>
-            <div className="card shadow-lg p-4 w-75">
-                <h2 className="text-center text-danger fw-bold mb-3">Add Your Restaurant 🍴</h2>
-                <p className="text-muted text-center mb-4">
+        <div className="container-fluid d-flex justify-content-center align-items-center bgpic" style={{ minHeight: "90vh" }}>
+            <div className="card shadow-lg p-4 w-50 mt-2">
+                <h2 className="text-center text-danger fw-bold mb-2">Add Your Restaurant 🍴</h2>
+                <p className="text-muted text-center mb-3">
                     Fill out the details below to list your restaurant on <span className="fw-bold">BiteKart</span>.
                 </p>
                 <form onSubmit={handleSubmit}>
