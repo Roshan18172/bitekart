@@ -1,27 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Footer from "./Footer";
 
 const Home = () => {
   return (
     <div>
       {/* Navbar */}
-      <nav className="navbar navbar-expand-lg navbar-dark bg-danger px-4">
-        <Link className="navbar-brand fw-bold fs-3" to="/">🍴 BiteKart</Link>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav ms-auto">
-            <li className="nav-item"><Link className="nav-link" to="/register">Register</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/login">Login</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/add-restaurant">Add Restaurant</Link></li>
-          </ul>
-        </div>
-      </nav>
+      
 
       {/* Hero Section */}
-      <section className="text-center text-dark d-flex flex-column justify-content-center align-items-center"
-        style={{ height: "70vh", background: "url('https://source.unsplash.com/1600x900/?food,restaurant') center/cover no-repeat" }}>
+      <section className="text-center text-light d-flex flex-column justify-content-center align-items-center"
+        style={{ height: "70vh", background: "url('https://t4.ftcdn.net/jpg/02/92/20/37/360_F_292203735_CSsyqyS6A4Z9Czd4Msf7qZEhoxjpzZl1.jpg') center/cover no-repeat" }}>
         <h1 className="fw-bold display-3">Delicious Food, Delivered Fast 🚀</h1>
         <p className="fs-5">Order from your favorite restaurants or manage your own on BiteKart</p>
         <div className="input-group w-50 mt-3">
@@ -54,10 +43,12 @@ const Home = () => {
         </div>
       </section>
 
+      <Footer/>
+
       {/* Footer */}
-      <footer className="bg-dark text-light text-center py-3">
+      {/* <footer className="bg-dark text-light text-center py-3">
         <p className="mb-0">© 2025 BiteKart. All rights reserved.</p>
-      </footer>
+      </footer> */}
     </div>
   );
 };
