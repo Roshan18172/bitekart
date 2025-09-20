@@ -1,13 +1,9 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import Footer from "./Footer";
 
 const Home = () => {
   return (
     <div>
-      {/* Navbar */}
-      
-
       {/* Hero Section */}
       <section className="text-center text-light d-flex flex-column justify-content-center align-items-center"
         style={{ height: "70vh", background: "url('https://t4.ftcdn.net/jpg/02/92/20/37/360_F_292203735_CSsyqyS6A4Z9Czd4Msf7qZEhoxjpzZl1.jpg') center/cover no-repeat" }}>
