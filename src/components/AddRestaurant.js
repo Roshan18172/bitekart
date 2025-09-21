@@ -26,7 +26,7 @@ const AddRestaurant = () => {
     };
 
     return (
-        <div className="container-fluid d-flex justify-content-center align-items-center bgpic" style={{ minHeight: "90vh" }}>
+        <div className="container-fluid d-flex justify-content-center align-items-center bgpic" style={{ minHeight: "92vh" }}>
             <div className="card shadow-lg p-4 w-50 mt-2">
                 <h2 className="text-center text-danger fw-bold mb-2">Add Your Restaurant 🍴</h2>
                 <p className="text-muted text-center mb-3">

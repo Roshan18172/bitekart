@@ -18,7 +18,7 @@ const Login = () => {
     };
 
     return (
-        <div className="container-fluid d-flex justify-content-center align-items-center bgpic" style={{ minHeight: "90vh" }}>
+        <div className="container-fluid d-flex justify-content-center align-items-center bgpic" style={{ minHeight: "92vh" }}>
             <div className="card shadow-lg p-4 w-50">
                 <h2 className="text-center text-danger fw-bold mb-3">Login to BiteKart</h2>
                 <form onSubmit={handleSubmit}>
