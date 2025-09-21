@@ -1,5 +1,5 @@
 import React from "react";
-// import "bootstrap/dist/css/bootstrap.min.css";
+import Footer from "./Footer";
 
 const categories = [
   { name: "Rolls", img: "https://b.zmtcdn.com/data/dish_images/c2f22c42f7ba90d81440a88449f4e5891634806087.png" },
@@ -55,6 +55,14 @@ const restaurants = [
     rating: 4.1,
     time: "29 min",
   },
+  {
+    name: "Cafe Sizzle",
+    img: "https://b.zmtcdn.com/data/pictures/8/19185698/4fa658f4b62f3dd7786ea3a0ee084cbe_o2_featured_v2.jpg?output-format=webp",
+    cuisine: "Burger, Fast Food",
+    price: "₹150",
+    rating: 3.8,
+    time: "29 min",
+  },
 ];
 
 const BiteHome = () => {
@@ -86,12 +94,14 @@ const BiteHome = () => {
       <div className="d-flex gap-4 overflow-auto mb-5">
         {categories.map((cat, index) => (
           <div key={index} className="text-center">
-            <img
-              src={cat.img}
-              alt={cat.name}
-              className="rounded-circle shadow"
-              style={{ width: "120px", height: "120px", objectFit: "cover" }}
-            />
+            <a href="#">
+              <img
+                src={cat.img}
+                alt={cat.name}
+                className="rounded-circle shadow"
+                style={{ width: "120px", height: "120px", objectFit: "cover" }}
+              />
+            </a>
             <p className="mt-2 fw-semibold">{cat.name}</p>
           </div>
         ))}
@@ -107,7 +117,7 @@ const BiteHome = () => {
                 src={res.img}
                 className="card-img-top"
                 alt={res.name}
-                style={{ height: "200px", objectFit: "cover" }}
+                style={{ height: "250px", objectFit: "cover" }}
               />
               <div className="card-body">
                 <h5 className="card-title">{res.name}</h5>
@@ -122,6 +132,7 @@ const BiteHome = () => {
           </div>
         ))}
       </div>
+      <Footer />
     </div>
   );
 };
