@@ -10,8 +10,10 @@ app.get('/', (req, res) => {
     }   );
 app.use(cors());
 app.use(express.json()); // Middleware to parse JSON bodies
-app.use("/api/auth", require('./routes/auth')); // Use the auth routes
+app.use("/api/auth/users", require('./routes/authUser')); // Use the auth routes for Users
+app.use("/api/auth/restaurants", require('./routes/authRestaurant')); // Use the auth routes for Restaurants
+app.use("/api/auth/deliveries", require('./routes/authDelivery')); // Use the auth routes for DeliveryPartners
 
 app.listen(PORT, () => {   
-    console.log(`myNotebook Server is running on port http://localhost:${PORT}`);
+    console.log(`BiteKart Server is running on port http://localhost:${PORT}`);
 }); // Start the server and listen on the specified port

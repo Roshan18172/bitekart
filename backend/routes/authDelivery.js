@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const DeliveryPartner = require("../models/DeliveryPartner");
 
 const router = express.Router();
-
+const JWT_SECRET = "mysecretkey";
 // Register Delivery Partner
 router.post("/register", async (req, res) => {
     try {
@@ -19,7 +19,7 @@ router.post("/register", async (req, res) => {
         partner = new DeliveryPartner({ name, email, password: hashedPassword, phone, vehicleType });
         await partner.save();
 
-        const token = jwt.sign({ id: partner._id, role: "delivery" }, process.env.JWT_SECRET);
+        const token = jwt.sign({ id: partner._id, role: "delivery" }, JWT_SECRET);
 
         res.json({ token, partner });
     } catch (err) {
@@ -37,7 +37,7 @@ router.post("/login", async (req, res) => {
         const isMatch = await bcrypt.compare(password, partner.password);
         if (!isMatch) return res.status(400).json({ msg: "Invalid Credentials" });
 
-        const token = jwt.sign({ id: partner._id, role: "delivery" }, process.env.JWT_SECRET, { expiresIn: "9h" });
+        const token = jwt.sign({ id: partner._id, role: "delivery" }, JWT_SECRET, { expiresIn: "9h" });
 
         res.json({ token, partner });
     } catch (err) {

@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const Restaurant = require("../models/Restaurant");
 
 const router = express.Router();
-
+const JWT_SECRET = "mysecretkey";
 // Register Restaurant
 router.post("/register", async (req, res) => {
     try {
@@ -19,13 +19,14 @@ router.post("/register", async (req, res) => {
         restaurant = new Restaurant({ name, email, password: hashedPassword, phone, address, cuisine });
         await restaurant.save();
 
-        const token = jwt.sign({ id: restaurant._id, role: "restaurant" }, process.env.JWT_SECRET );
-
+        const token = jwt.sign({ id: restaurant._id, role: "restaurant" }, JWT_SECRET);
         res.json({ token, restaurant });
     } catch (err) {
-        res.status(500).json({ msg: "Server Error" });
+        console.error("❌ Error in Restaurant Register:", err); // full object
+        res.status(500).json({ msg: "Server Error", error: err.message, stack: err.stack });
     }
 });
+
 
 // Login Restaurant
 router.post("/login", async (req, res) => {
@@ -37,7 +38,7 @@ router.post("/login", async (req, res) => {
         const isMatch = await bcrypt.compare(password, restaurant.password);
         if (!isMatch) return res.status(400).json({ msg: "Invalid Credentials" });
 
-        const token = jwt.sign({ id: restaurant._id, role: "restaurant" }, process.env.JWT_SECRET, { expiresIn: "20h" });
+        const token = jwt.sign({ id: restaurant._id, role: "restaurant" }, JWT_SECRET, { expiresIn: "20h" });
 
         res.json({ token, restaurant });
     } catch (err) {

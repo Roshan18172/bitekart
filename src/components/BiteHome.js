@@ -11,7 +11,26 @@ const categories = [
   { name: "Noodles", img: "https://b.zmtcdn.com/data/dish_images/91c554bcbbab049353a8808fc970e3b31615960315.png" },
   { name: "North Indian", img: "https://b.zmtcdn.com/data/o2_assets/019409fe8f838312214d9211be010ef31678798444.jpeg" },
   { name: "Thali", img: "https://b.zmtcdn.com/data/o2_assets/52eb9796bb9bcf0eba64c643349e97211634401116.png" },
-
+  { name: "Chinese", img: "https://b.zmtcdn.com/data/o2_assets/e90a634895787ce77a93212351fa18991678798565.jpeg" },
+  { name: "Desserts", img: "https://b.zmtcdn.com/data/dish_images/d5ab931c8c239271de45e1c159af94311634805744.png" },
+  { name: "Ice Cream", img: "https://funcakes.com/content/uploads/2023/06/Ice-cream-recipe-960x960-c-default.jpg" },
+  { name: "Juices", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXaYzA-Ld5I99hCMQ7nfph7HjJuL2xkb5tRw&s" },
+  { name: "Sandwich", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZQftsuVA4z-5LI7hsJCPOc7c-zmQNMj5S5Q&s" },
+  { name: "South Indian", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmF-hAFMnyfSWeYOTjiy46Y3fEvn2rhzGptA&s" },
+  { name: "Kebabs", img: "https://joyfoodsunshine.com/wp-content/uploads/2022/06/chicken-kebabs-recipe-1.jpg" },
+  { name: "Pasta", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtGxJQNLQ_tpfDqgGfFpEARarc7qNGTDVEYg&s" },
+  { name: "Sushi", img: "https://asianinspirations.com.au/wp-content/uploads/2018/12/R01459_Easy-Sushi-Rolls-2.jpg" },
+  { name: "Salads", img: "https://www.healthyseasonalrecipes.com/wp-content/uploads/2022/06/healthy-cobb-salad-steps-sq-026.jpg" },
+  { name: "Wraps", img: "https://www.simplotfoods.com/_next/image?url=https%3A%2F%2Fimages.ctfassets.net%2F0dkgxhks0leg%2F20lSS8E9youzDQl0YDas62%2Fa65839cc41cef8b9b8d8b00c744c9ef5%2FChicken_Bacon_Dill_Pickle_Avocado_Wrap_with_Fries.jpg%3Ffm%3Dwebp&w=3840&q=75" },
+  { name: "Beverages", img: "https://eu-images.contentstack.com/v3/assets/blta023acee29658dfc/blta9f158c45627aa62/651dbb742365a678d7ec7f18/AdobeStock_279692163_Editorial_Use_Only-Beverage-FTR-new.jpg?disable=upscale&width=1200&height=630&fit=crop" },
+  { name: "Seafood", img: "https://www.recipetineats.com/tachyon/2023/12/Seafood-Platter_Sony-5.jpg" },
+  { name: "Vegan", img: "https://www.theedgyveg.com/wp-content/uploads/2020/01/Single-Vegan-Meals-For-One-1.jpg" },
+  { name: "Gluten Free", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsZTYBw9VPCQkXrDBb_2SKYLKlbVwU4iMCdg&s" },
+  { name: "Breakfast", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQmL71p1BjdtEK0wr33EdaBnIUCV3Kud9Kfw&s" },
+  { name: "Snacks", img: "https://cablevey.com/wp-content/uploads/2020/11/The-Complete-Guide-on-Snack-Foods.jpg" },
+  { name: "Street Food", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVjjiZtM__wrwJOslaff5C3J6mKAuj1jA34Q&s" },
+  { name: "BBQ", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbSfiTbAtgMEg44Ydj4LI674pnyoVWSpJywg&s" },
+  { name: "Cafe", img: "https://perfectdailygrind.com/wp-content/uploads/2019/09/Low-Waste-2.png" },
 ];
 
 const restaurants = [

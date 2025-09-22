@@ -12,7 +12,7 @@ const Register = () => {
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
-
+    // localStorage.clear();
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("Register Data:", form);
