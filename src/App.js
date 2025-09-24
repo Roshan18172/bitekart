@@ -5,6 +5,7 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import AddRestaurant from "./components/AddRestaurant";
 import BiteHome from "./components/BiteHome";
+import RestaurantDashboard from "./components/Restaurant/RestaurantDashboard";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/add-restaurant" element={<AddRestaurant />} />
           <Route path="/home" element={<BiteHome/>} />
+          <Route path="/restaurant-dashboard" element={<RestaurantDashboard/>} />
         </Routes>
       </Router>
     </div>
