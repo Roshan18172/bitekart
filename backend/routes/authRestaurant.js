@@ -8,9 +8,9 @@ const JWT_SECRET = "mysecretkey";
 
 // -------------------- Multer Config --------------------
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "uploads/"),
-  filename: (req, file, cb) =>
-    cb(null, Date.now() + "-" + file.originalname),
+    destination: (req, file, cb) => cb(null, "uploads/"),
+    filename: (req, file, cb) =>
+        cb(null, Date.now() + "-" + file.originalname),
 });
 const upload = multer({ storage });
 
@@ -49,7 +49,12 @@ router.post("/login", async (req, res) => {
 
         const token = jwt.sign({ id: restaurant._id, role: "restaurant" }, JWT_SECRET, { expiresIn: "20h" });
 
-        res.json({ token, restaurant });
+        res.json({
+            success: true,
+            token,
+            userType: "restaurant",
+            data: restaurant
+        });
     } catch (err) {
         res.status(500).json({ msg: "Server Error" });
     }
