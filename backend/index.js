@@ -10,6 +10,7 @@ app.get('/', (req, res) => {
     }   );
 app.use(cors());
 app.use(express.json()); // Middleware to parse JSON bodies
+app.use("/uploads", express.static("uploads"));
 app.use("/api/auth/users", require('./routes/authUser')); // Use the auth routes for Users
 app.use("/api/auth/restaurants", require('./routes/authRestaurant')); // Use the auth routes for Restaurants
 app.use("/api/auth/deliveries", require('./routes/authDelivery')); // Use the auth routes for DeliveryPartners

@@ -1,5 +1,15 @@
 const mongoose = require("mongoose");
 
+const MenuItemSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  type: { type: String, enum: ["veg", "nonveg"], required: true },
+  price: { type: Number, required: true },
+  cuisine: { type: String, required: true },
+  description: { type: String },
+  image: { type: String }, // store image filename
+});
+
+
 const RestaurantSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -7,13 +17,7 @@ const RestaurantSchema = new mongoose.Schema({
     phone: { type: String },
     address: { type: String },
     cuisine: { type: String },
-    menu: [
-        {
-            itemName: String,
-            price: Number,
-            available: { type: Boolean, default: true }
-        }
-    ]
+     menu: [MenuItemSchema]
 }, { timestamps: true });
 
 const Restaurant = mongoose.model("Restaurant", RestaurantSchema);
