@@ -12,6 +12,10 @@ function RestaurantDashboard() {
         image: null,
     });
 
+    // For Editing
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [editItem, setEditItem] = useState(null);
+
     const token = localStorage.getItem("restaurantToken");
     if (token) {
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -21,11 +25,10 @@ function RestaurantDashboard() {
 
     // Fetch menu items
     useEffect(() => {
-        axios
-            .get(`http://localhost:5000/api/restaurants/${restaurantId}`)
+        axios.get(`http://localhost:5000/api/restaurants/${restaurantId}`)
             .then((res) => setMenu(res.data.menu))
             .catch((err) => console.error(err));
-    }, [restaurantId]);
+    }, [restaurantId, token]);
 
     // Handle form input
     const handleChange = (e) => {
@@ -54,18 +57,47 @@ function RestaurantDashboard() {
             console.error(err);
         }
     };
-      // Delete Menu Item
-  const handleDelete = async (itemId) => {
-    try {
-      const res = await axios.delete(
-        `http://localhost:5000/api/restaurants/${restaurantId}/menu/${itemId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setMenu({ ...menu, menu: res.data.menu });
-    } catch (err) {
-      console.error(err);
-    }
-  };
+    // Delete Menu Item
+    const handleDelete = async (itemId) => {
+        try {
+            const res = await axios.delete(
+                `http://localhost:5000/api/restaurants/${restaurantId}/menu/${itemId}`,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            setMenu({ ...menu, menu: res.data.menu });
+        } catch (err) {
+            console.error(err);
+        }
+    };
+    // Open Edit Modal
+    const openEditModal = (item) => {
+        setEditItem(item);
+        setShowEditModal(true);
+    };
+    // Save Edit
+    const handleEditSave = async () => {
+        try {
+            const formData = new FormData();
+            Object.keys(editItem).forEach((key) => {
+                formData.append(key, editItem[key]);
+            });
+
+            const res = await axios.put(
+                `http://localhost:5000/api/restaurants/${restaurantId}/menu/${editItem._id}`,
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            setMenu({ ...menu, menu: res.data.menu });
+            setShowEditModal(false);
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     return (
         <div className="container mt-4">
@@ -142,6 +174,9 @@ function RestaurantDashboard() {
                                     </h5>
                                     <p className="card-text">{item.description || "No description provided"}</p>
                                     <p><strong>₹{item.price}</strong> | {item.cuisine}</p>
+                                    <button className="btn btn-warning btn-sm me-2" onClick={() => openEditModal(item)}>
+                                        Edit
+                                    </button>
                                     <button className="btn btn-danger btn-sm" onClick={() => handleDelete(item._id)} >
                                         Delete
                                     </button>
@@ -153,6 +188,64 @@ function RestaurantDashboard() {
                     <p>No items added yet.</p>
                 )}
             </div>
+            {editItem && (
+                <div className="modal fade show" id="editModal" tabIndex="-1"
+                    style={{ display: "block", background: "rgba(0,0,0,0.5)" }}>
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Edit Item</h5>
+                                <button type="button" className="btn-close" onClick={() => setEditItem(null)} ></button>
+                            </div>
+                            <div className="modal-body">
+                                <div className="mb-3">
+                                    <label className="form-label">Item Name</label>
+                                    <input type="text" className="form-control" value={editItem.name}
+                                        onChange={(e) => setEditItem({ ...editItem, name: e.target.value }) } />
+                                </div>
+
+                                <div className="mb-3">
+                                    <label className="form-label">Price</label>
+                                    <input type="number" className="form-control" value={editItem.price}
+                                        onChange={(e) => setEditItem({ ...editItem, price: e.target.value }) } />
+                                </div>
+
+                                <div className="mb-3">
+                                    <label className="form-label">Cuisine</label>
+                                    <select className="form-select" value={editItem.cuisine}
+                                        onChange={(e) => setEditItem({ ...editItem, cuisine: e.target.value }) } >
+                                        <option value="Indian">Indian</option>
+                                        <option value="Chinese">Chinese</option>
+                                        <option value="Italian">Italian</option>
+                                        <option value="Fast Food">Fast Food</option>
+                                        <option value="Bakery">Bakery</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+
+                                <div className="mb-3">
+                                    <label className="form-label">Type</label>
+                                    <select className="form-select" value={editItem.type}
+                                        onChange={(e) => setEditItem({ ...editItem, type: e.target.value }) } >
+                                        <option value="veg">Veg</option>
+                                        <option value="nonveg">Non-Veg</option>
+                                    </select>
+                                </div>
+
+                                <div className="mb-3">
+                                    <label className="form-label">Change Image</label>
+                                    <input type="file" className="form-control"
+                                        onChange={(e) => setEditItem({ ...editItem, image: e.target.files[0] })}  />
+                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button className="btn btn-secondary" onClick={() => setEditItem(null)} >Close </button>
+                                <button className="btn btn-primary" onClick={handleEditSave} > Save Changes </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
