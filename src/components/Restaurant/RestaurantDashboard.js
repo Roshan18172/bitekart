@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-// import "bootstrap/dist/css/bootstrap.min.css";
 
 const RestaurantDashboard = () => {
     const [restaurant, setRestaurant] = useState(null);
@@ -47,6 +46,7 @@ const RestaurantDashboard = () => {
                     phone: res.data.restaurant.phone,
                     address: res.data.restaurant.address,
                     cuisine: res.data.restaurant.cuisine,
+                    type: res.data.restaurant.type,
                     image: null,
                 });
 
@@ -284,12 +284,14 @@ const RestaurantDashboard = () => {
                             <div className="card h-100 shadow-sm">
                                 <img
                                     src={`http://localhost:5000/uploads/${item.image}`}
-                                    className="card-img-top"
+                                    className="card-img-top fixed-img-height"
                                     alt={item.name}
+                                    height="200"
                                 />
                                 <div className="card-body">
                                     <h6 className="fw-bold">{item.name}</h6>
                                     <p className="text-muted mb-1">{item.cuisine}</p>
+                                    <p className={`badge ${ item.type === "veg" ? "bg-success" : "bg-danger" }`}>{item.type}</p>
                                     <p className="fw-bold">₹{item.price}</p>
                                 </div>
                             </div>
