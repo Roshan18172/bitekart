@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./styles..css";
+import axios from "axios";
 
 const AddRestaurant = () => {
     const [form, setForm] = useState({
@@ -10,77 +10,164 @@ const AddRestaurant = () => {
         image: null,
     });
 
+    const [menuItems, setMenuItems] = useState([
+        { name: "", type: "veg", price: "", cuisine: "", description: "", image: null }
+    ]);
+
     const handleChange = (e) => {
         const { name, value, files } = e.target;
-        if (files) {
-            setForm({ ...form, [name]: files[0] });
-        } else {
-            setForm({ ...form, [name]: value });
+        setForm({ ...form, [name]: files ? files[0] : value });
+    };
+
+    const handleMenuChange = (index, e) => {
+        const { name, value, files } = e.target;
+        const updatedMenu = [...menuItems];
+        updatedMenu[index][name] = files ? files[0] : value;
+        setMenuItems(updatedMenu);
+    };
+
+    const addMenuItem = () => {
+        setMenuItems([
+            ...menuItems,
+            { name: "", type: "veg", price: "", cuisine: "", description: "", image: null }
+        ]);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const data = new FormData();
+
+        // Restaurant details
+        data.append("name", form.name);
+        data.append("address", form.address);
+        data.append("cuisine", form.cuisine);
+        data.append("priceRange", form.priceRange);
+        if (form.image) data.append("image", form.image);
+
+        // Menu items (JSON + images)
+        data.append("menu", JSON.stringify(menuItems.map(item => ({
+            name: item.name,
+            type: item.type,
+            price: item.price,
+            cuisine: item.cuisine,
+            description: item.description
+        }))));
+
+        // Append images separately
+        menuItems.forEach((item, index) => {
+            if (item.image) {
+                data.append(`menuImage_${index}`, item.image);
+            }
+        });
+
+        try {
+            const res = await axios.post("http://localhost:5000/api/restaurants/add", data, {
+                headers: { "Content-Type": "multipart/form-data" }
+            });
+
+            alert("Restaurant Added Successfully!");
+            console.log(res.data);
+
+        } catch (err) {
+            console.error(err);
+            alert("Error adding restaurant");
         }
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log("Restaurant Data:", form);
-        // TODO: send to backend via POST /api/restaurants
-    };
-
     return (
-        <div className="container-fluid d-flex justify-content-center align-items-center bgpic" style={{ minHeight: "92vh" }}>
-            <div className="card shadow-lg p-4 w-50 mt-2">
-                <h2 className="text-center text-danger fw-bold mb-2">Add Your Restaurant 🍴</h2>
-                <p className="text-muted text-center mb-3">
-                    Fill out the details below to list your restaurant on <span className="fw-bold">BiteKart</span>.
-                </p>
+        <div className="container mt-4">
+            <div className="card shadow-lg p-4">
+                <h2 className="text-center text-danger fw-bold">Add Your Restaurant 🍴</h2>
+
                 <form onSubmit={handleSubmit}>
-                    {/* Restaurant Name */}
+
+                    {/* Restaurant Details */}
                     <div className="mb-3">
-                        <label className="form-label">Restaurant Name</label>
-                        <input type="text" name="name" className="form-control" placeholder="Enter restaurant name"
+                        <label>Restaurant Name</label>
+                        <input type="text" name="name" className="form-control"
                             value={form.name} onChange={handleChange} required />
                     </div>
 
-                    {/* Address */}
                     <div className="mb-3">
-                        <label className="form-label">Address</label>
-                        <textarea name="address" className="form-control" rows="2" placeholder="Enter full address"
-                            value={form.address} onChange={handleChange} required></textarea>
+                        <label>Address</label>
+                        <textarea name="address" className="form-control"
+                            value={form.address} onChange={handleChange} required />
                     </div>
 
-                    {/* Cuisine */}
                     <div className="mb-3">
-                        <label className="form-label">Cuisine Type</label>
-                        <select name="cuisine" className="form-select" value={form.cuisine} onChange={handleChange} required>
-                            <option value="">Select Cuisine</option>
-                            <option value="Indian">Indian</option>
-                            <option value="Chinese">Chinese</option>
-                            <option value="Italian">Italian</option>
-                            <option value="Fast Food">Fast Food</option>
-                            <option value="Bakery">Bakery</option>
-                            <option value="Other">Other</option>
+                        <label>Cuisine Type</label>
+                        <select name="cuisine" className="form-select"
+                            value={form.cuisine} onChange={handleChange} required>
+                            <option value="">Select</option>
+                            <option>Indian</option>
+                            <option>Chinese</option>
+                            <option>Italian</option>
+                            <option>Fast Food</option>
+                            <option>Bakery</option>
                         </select>
                     </div>
 
-                    {/* Price Range */}
                     <div className="mb-3">
-                        <label className="form-label">Average Price Range</label>
-                        <select name="priceRange" className="form-select" value={form.priceRange} onChange={handleChange} required>
-                            <option value="">Select Price Range</option>
-                            <option value="₹100 - ₹300">₹100 - ₹300</option>
-                            <option value="₹300 - ₹600">₹300 - ₹600</option>
-                            <option value="₹600 - ₹1000">₹600 - ₹1000</option>
-                            <option value="₹1000+">₹1000+</option>
+                        <label>Price Range</label>
+                        <select name="priceRange" className="form-select"
+                            value={form.priceRange} onChange={handleChange} required>
+                            <option value="">Select</option>
+                            <option>₹100 - ₹300</option>
+                            <option>₹300 - ₹600</option>
+                            <option>₹600 - ₹1000</option>
                         </select>
                     </div>
 
-                    {/* Image Upload */}
                     <div className="mb-3">
-                        <label className="form-label">Upload Restaurant Logo/Image</label>
+                        <label>Restaurant Image</label>
                         <input type="file" name="image" className="form-control" onChange={handleChange} />
                     </div>
 
-                    {/* Submit */}
-                    <button type="submit" className="btn btn-danger w-100">Add Restaurant</button>
+                    <hr />
+
+                    {/* Menu Section */}
+                    <h4 className="text-danger">Menu Items</h4>
+
+                    {menuItems.map((item, index) => (
+                        <div key={index} className="card p-3 mb-3 border rounded">
+                            <h5>Menu Item {index + 1}</h5>
+
+                            <input type="text" name="name" className="form-control mb-2"
+                                placeholder="Item name"
+                                value={item.name} onChange={(e) => handleMenuChange(index, e)} />
+
+                            <select name="type" className="form-select mb-2"
+                                value={item.type} onChange={(e) => handleMenuChange(index, e)}>
+                                <option value="veg">Veg</option>
+                                <option value="nonveg">Non-Veg</option>
+                            </select>
+
+                            <input type="number" name="price" className="form-control mb-2"
+                                placeholder="Price"
+                                value={item.price} onChange={(e) => handleMenuChange(index, e)} />
+
+                            <input type="text" name="cuisine" className="form-control mb-2"
+                                placeholder="Cuisine (e.g., North Indian)"
+                                value={item.cuisine} onChange={(e) => handleMenuChange(index, e)} />
+
+                            <textarea name="description" className="form-control mb-2"
+                                placeholder="Description"
+                                value={item.description} onChange={(e) => handleMenuChange(index, e)} />
+
+                            <input type="file" name="image" className="form-control"
+                                onChange={(e) => handleMenuChange(index, e)} />
+                        </div>
+                    ))}
+
+                    <button type="button" className="btn btn-warning mb-3"
+                        onClick={addMenuItem}>
+                        + Add More Menu Items
+                    </button>
+
+                    <button type="submit" className="btn btn-danger w-100">
+                        Add Restaurant
+                    </button>
                 </form>
             </div>
         </div>

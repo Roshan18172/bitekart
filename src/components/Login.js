@@ -40,6 +40,7 @@ const Login = () => {
         // localStorage.setItem("name", res.data.user ? res.data.user.name : res.data.partner ? res.data.partner.name : "");
         if (userType === "restaurant" && res.data.data && res.data.data.name) {
           localStorage.setItem("restaurantName", res.data.data.name);
+          localStorage.setItem("restaurantId", res.data.data._id);
         }
         if (userType === "delivery" && res.data.partner && res.data.partner.name) {
           localStorage.setItem("deliveryName", res.data.partner.name);

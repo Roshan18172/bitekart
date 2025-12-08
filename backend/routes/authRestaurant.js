@@ -64,10 +64,15 @@ router.post("/login", async (req, res) => {
 router.get("/:id", async (req, res) => {
     try {
         const restaurant = await Restaurant.findById(req.params.id);
-        if (!restaurant) return res.status(404).json({ msg: "Restaurant not found" });
+
+        if (!restaurant) {
+            return res.status(404).json({ message: "Restaurant not found" });
+        }
+
         res.json(restaurant);
-    } catch (err) {
-        res.status(500).json({ msg: "Server Error", error: err.message });
+    } catch (error) {
+        console.error("Error fetching restaurant:", error);
+        res.status(500).json({ message: "Server error" });
     }
 });
 
@@ -75,13 +80,18 @@ router.get("/:id", async (req, res) => {
 router.post("/:id/menu", upload.single("image"), async (req, res) => {
     try {
         const { name, type, price, cuisine, description } = req.body;
+
+        if (!name || !type || !price || !cuisine) {
+            return res.status(400).json({ msg: "All required fields must be filled" });
+        }
+
         const restaurant = await Restaurant.findById(req.params.id);
         if (!restaurant) return res.status(404).json({ msg: "Restaurant not found" });
 
         const newItem = {
             name,
             type,
-            price,
+            price: Number(price),
             cuisine,
             description,
             image: req.file ? req.file.filename : null,
@@ -89,27 +99,30 @@ router.post("/:id/menu", upload.single("image"), async (req, res) => {
 
         restaurant.menu.push(newItem);
         await restaurant.save();
+
         res.json({ msg: "Menu item added successfully", menu: restaurant.menu });
     } catch (err) {
         res.status(500).json({ msg: "Server Error", error: err.message });
     }
 });
 
+
 // -------------------- Edit Menu Item --------------------
 router.put("/:id/menu/:itemId", upload.single("image"), async (req, res) => {
     try {
         const { name, type, price, cuisine, description } = req.body;
+
         const restaurant = await Restaurant.findById(req.params.id);
         if (!restaurant) return res.status(404).json({ msg: "Restaurant not found" });
 
         const item = restaurant.menu.id(req.params.itemId);
         if (!item) return res.status(404).json({ msg: "Menu item not found" });
 
-        item.name = name || item.name;
-        item.type = type || item.type;
-        item.price = price || item.price;
-        item.cuisine = cuisine || item.cuisine;
-        item.description = description || item.description;
+        if (name) item.name = name;
+        if (type) item.type = type;
+        if (price) item.price = Number(price);
+        if (cuisine) item.cuisine = cuisine;
+        if (description) item.description = description;
         if (req.file) item.image = req.file.filename;
 
         await restaurant.save();
@@ -119,18 +132,52 @@ router.put("/:id/menu/:itemId", upload.single("image"), async (req, res) => {
     }
 });
 
+
 // -------------------- Delete Menu Item --------------------
 router.delete("/:id/menu/:itemId", async (req, res) => {
     try {
         const restaurant = await Restaurant.findById(req.params.id);
         if (!restaurant) return res.status(404).json({ msg: "Restaurant not found" });
 
-        restaurant.menu = restaurant.menu.filter((item) => item._id.toString() !== req.params.itemId);
+        const item = restaurant.menu.id(req.params.itemId);
+        if (!item) return res.status(404).json({ msg: "Menu item not found" });
+
+        item.deleteOne();
         await restaurant.save();
+
         res.json({ msg: "Menu item deleted successfully", menu: restaurant.menu });
     } catch (err) {
         res.status(500).json({ msg: "Server Error", error: err.message });
     }
 });
+module.exports = router;
 
+router.get("/dashboard/:id", async (req, res) => {
+    try {
+        const restaurant = await Restaurant.findById(req.params.id);
+
+        if (!restaurant) {
+            return res.status(404).json({ message: "Restaurant not found" });
+        }
+
+        // Dashboard stats
+        const stats = {
+            menuCount: restaurant.menu.length,
+            orderCount: 0,          // add real orders later
+            ratingCount: 0,         // add ratings later
+            todayEarnings: 0        // add earning logic later
+        };
+
+        res.json({
+            success: true,
+            restaurant,
+            stats,
+            recentOrders: []  // empty for now
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+});
 module.exports = router;

@@ -69,12 +69,12 @@ const NavBar = () => {
               {role === "restaurant" && (
                 <>
                   <li className="nav-item">
-                    <Link className="nav-link active" to="/restaurant/dashboard">
+                    <Link className="nav-link active" to="/restaurant-dashboard">
                       Dashboard
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link active" to="/restaurant/menu">
+                    <Link className="nav-link active" to="/restaurant/menu-manager">
                       Menu
                     </Link>
                   </li>

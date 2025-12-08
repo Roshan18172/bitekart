@@ -1,253 +1,165 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import "bootstrap/dist/css/bootstrap.min.css";
 
-function RestaurantDashboard() {
-    const [menu, setMenu] = useState([]);
-    const [form, setForm] = useState({
-        name: "",
-        type: "veg",
-        price: "",
-        cuisine: "",
-        description: "",
-        image: null,
+const RestaurantDashboard = () => {
+    const [restaurant, setRestaurant] = useState(null);
+    const [stats, setStats] = useState({
+        menuCount: 0,
+        orderCount: 0,
+        ratingCount: 0,
+        todayEarnings: 0,
     });
 
-    // For Editing
-    const [showEditModal, setShowEditModal] = useState(false);
-    const [editItem, setEditItem] = useState(null);
+    const [recentOrders, setRecentOrders] = useState([]);
 
-    const token = localStorage.getItem("restaurantToken");
-    if (token) {
-        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    }
-    // Replace with actual restaurant ID after implementing authentications
-    const restaurantId = "replace_with_loggedIn_restaurant_id"; // get from JWT/localStorage
+    const restaurantId = localStorage.getItem("restaurantId"); // saved during login
 
-    // Fetch menu items
+    // Fetch dashboard data
     useEffect(() => {
-        axios.get(`http://localhost:5000/api/restaurants/${restaurantId}`)
-            .then((res) => setMenu(res.data.menu))
-            .catch((err) => console.error(err));
-    }, [restaurantId, token]);
+        const fetchData = async () => {
+            try {
+                const res = await axios.get(
+                    `http://localhost:5000/api/auth/restaurants/dashboard/${restaurantId}`
+                );
 
-    // Handle form input
-    const handleChange = (e) => {
-        const { name, value, files } = e.target;
-        if (name === "image") {
-            setForm({ ...form, image: files[0] });
-        } else {
-            setForm({ ...form, [name]: value });
-        }
-    };
+                setRestaurant(res.data.restaurant);
+                setStats(res.data.stats);
+                setRecentOrders(res.data.recentOrders);
+            } catch (error) {
+                console.error("Dashboard Load Error:", error);
+            }
+        };
 
-    // Add Menu Item
-    const addMenuItem = async () => {
-        const formData = new FormData();
-        for (let key in form) formData.append(key, form[key]);
+        fetchData();
+    }, [restaurantId]);
 
-        try {
-            const res = await axios.post(
-                `http://localhost:5000/api/restaurants/${restaurantId}/menu`,
-                formData,
-                { headers: { "Content-Type": "multipart/form-data" } }
-            );
-            setMenu(res.data.menu);
-            setForm({ name: "", type: "veg", price: "", cuisine: "", description: "", image: null });
-        } catch (err) {
-            console.error(err);
-        }
-    };
-    // Delete Menu Item
-    const handleDelete = async (itemId) => {
-        try {
-            const res = await axios.delete(
-                `http://localhost:5000/api/restaurants/${restaurantId}/menu/${itemId}`,
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            setMenu({ ...menu, menu: res.data.menu });
-        } catch (err) {
-            console.error(err);
-        }
-    };
-    // Open Edit Modal
-    const openEditModal = (item) => {
-        setEditItem(item);
-        setShowEditModal(true);
-    };
-    // Save Edit
-    const handleEditSave = async () => {
-        try {
-            const formData = new FormData();
-            Object.keys(editItem).forEach((key) => {
-                formData.append(key, editItem[key]);
-            });
-
-            const res = await axios.put(
-                `http://localhost:5000/api/restaurants/${restaurantId}/menu/${editItem._id}`,
-                formData,
-                {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-            setMenu({ ...menu, menu: res.data.menu });
-            setShowEditModal(false);
-        } catch (err) {
-            console.error(err);
-        }
-    };
+    if (!restaurant) return <h3 className="text-center mt-5">Loading...</h3>;
 
     return (
-        <div className="container mt-4">
-            <h2 className="text-center mb-4">🍽 Restaurant Dashboard</h2>
+        <div className="container py-4">
 
-            <div className="card shadow-lg p-4 mb-5">
-                <h4 className="mb-3">Add New Menu Item</h4>
-                <div className="row g-3">
+            {/* Header */}
+            <div className="d-flex justify-content-between align-items-center mb-4">
+                <h2 className="fw-bold text-danger">🍽️ {restaurant.name} Dashboard</h2>
+                <button className="btn btn-outline-danger">Logout</button>
+            </div>
+
+            {/* Restaurant Info */}
+            <div className="card shadow mb-4 p-3">
+                <h4 className="fw-bold mb-3">Restaurant Details</h4>
+                <div className="row">
                     <div className="col-md-4">
-                        <label className="form-label">Item Name</label>
-                        <input type="text" name="name" value={form.name} onChange={handleChange} className="form-control"
-                            placeholder="Enter item name" required />
+                        <img
+                            src={`http://localhost:5000/uploads/${restaurant.image}`}
+                            alt="Restaurant"
+                            className="img-fluid rounded"
+                        />
                     </div>
-
-                    <div className="col-md-2">
-                        <label className="form-label">Type</label>
-                        <select name="type" className="form-select" value={form.type} onChange={handleChange} required >
-                            <option value="veg">Veg</option>
-                            <option value="nonveg">Non-Veg</option>
-                        </select>
-                    </div>
-
-                    <div className="col-md-2">
-                        <label className="form-label">Price (₹)</label>
-                        <input type="number" name="price" value={form.price} onChange={handleChange}
-                            className="form-control" placeholder="Price" required />
-                    </div>
-
-                    <div className="col-md-4">
-                        <label className="form-label">Cuisine Type</label>
-                        <select name="cuisine" className="form-select" value={form.cuisine} onChange={handleChange} required >
-                            <option value="">Select Cuisine</option>
-                            <option value="Indian">Indian</option>
-                            <option value="Chinese">Chinese</option>
-                            <option value="Italian">Italian</option>
-                            <option value="Fast Food">Fast Food</option>
-                            <option value="Bakery">Bakery</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-
-                    <div className="col-md-12">
-                        <label className="form-label">Description</label>
-                        <textarea name="description" value={form.description} onChange={handleChange}
-                            className="form-control" placeholder="Enter item description" rows="2"></textarea>
-                    </div>
-
-                    <div className="col-md-6">
-                        <label className="form-label">Upload Image</label>
-                        <input type="file" name="image" className="form-control" accept="image/*" onChange={handleChange} />
-                    </div>
-
-                    <div className="col-md-6 d-flex align-items-end">
-                        <button className="btn btn-success w-100" onClick={addMenuItem}>➕ Add Item</button>
+                    <div className="col-md-8">
+                        <p><strong>Name:</strong> {restaurant.name}</p>
+                        <p><strong>Email:</strong> {restaurant.email}</p>
+                        <p><strong>Phone:</strong> {restaurant.phone}</p>
+                        <p><strong>Address:</strong> {restaurant.address}</p>
                     </div>
                 </div>
             </div>
 
-            <h4 className="mb-3">📋 Current Menu</h4>
-            <div className="row">
-                {menu.length > 0 ? (
-                    menu.map((item) => (
-                        <div key={item._id} className="col-md-4 mb-4">
+            {/* Stats Section */}
+            <div className="row g-3">
+                <div className="col-md-3">
+                    <div className="card shadow p-3 text-center">
+                        <h5>Total Menu</h5>
+                        <span className="fs-3 fw-bold text-danger">{stats.menuCount}</span>
+                    </div>
+                </div>
+
+                <div className="col-md-3">
+                    <div className="card shadow p-3 text-center">
+                        <h5>Total Orders</h5>
+                        <span className="fs-3 fw-bold text-primary">{stats.orderCount}</span>
+                    </div>
+                </div>
+
+                <div className="col-md-3">
+                    <div className="card shadow p-3 text-center">
+                        <h5>User Ratings</h5>
+                        <span className="fs-3 fw-bold text-success">{stats.ratingCount}</span>
+                    </div>
+                </div>
+
+                <div className="col-md-3">
+                    <div className="card shadow p-3 text-center">
+                        <h5>Today's Earnings</h5>
+                        <span className="fs-3 fw-bold text-warning">₹{stats.todayEarnings}</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Actions */}
+            <div className="text-center my-4">
+                <button className="btn btn-danger mx-2 px-4">➕ Add Menu Item</button>
+                <button className="btn btn-primary mx-2 px-4">📦 View Orders</button>
+                <button className="btn btn-secondary mx-2 px-4">⚙️ Edit Profile</button>
+            </div>
+
+            {/* Menu Section */}
+            <div className="card shadow my-4 p-3">
+                <h4 className="fw-bold mb-3">Menu Items</h4>
+                <div className="row">
+                    {restaurant.menu.map((item) => (
+                        <div className="col-md-3 mb-3" key={item._id}>
                             <div className="card h-100 shadow-sm">
-                                {item.image && (
-                                    <img src={`http://localhost:5000/uploads/${item.image}`} className="card-img-top"
-                                        alt={item.name} style={{ height: "200px", objectFit: "cover" }} />
-                                )}
+                                <img
+                                    src={`http://localhost:5000/uploads/${item.image}`}
+                                    className="card-img-top"
+                                    alt={item.name}
+                                />
                                 <div className="card-body">
-                                    <h5 className="card-title">
-                                        {item.name}{" "}
-                                        <span className={`badge ${item.type === "veg" ? "bg-success" : "bg-danger"}`}>
-                                            {item.type}</span>
-                                    </h5>
-                                    <p className="card-text">{item.description || "No description provided"}</p>
-                                    <p><strong>₹{item.price}</strong> | {item.cuisine}</p>
-                                    <button className="btn btn-warning btn-sm me-2" onClick={() => openEditModal(item)}>
-                                        Edit
-                                    </button>
-                                    <button className="btn btn-danger btn-sm" onClick={() => handleDelete(item._id)} >
-                                        Delete
-                                    </button>
+                                    <h6 className="fw-bold">{item.name}</h6>
+                                    <p className="text-muted mb-1">{item.cuisine}</p>
+                                    <p className="fw-bold">₹{item.price}</p>
                                 </div>
                             </div>
                         </div>
-                    ))
+                    ))}
+                </div>
+            </div>
+
+            {/* Recent Orders */}
+            <div className="card shadow p-3 mb-5">
+                <h4 className="fw-bold mb-3">Recent Orders</h4>
+
+                {recentOrders.length === 0 ? (
+                    <p className="text-muted">No recent orders.</p>
                 ) : (
-                    <p>No items added yet.</p>
+                    <table className="table table-bordered">
+                        <thead className="table-danger">
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {recentOrders.map((order) => (
+                                <tr key={order._id}>
+                                    <td>{order._id}</td>
+                                    <td>{order.customerName}</td>
+                                    <td>₹{order.total}</td>
+                                    <td>
+                                        <span className="badge bg-success">{order.status}</span>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 )}
             </div>
-            {editItem && (
-                <div className="modal fade show" id="editModal" tabIndex="-1"
-                    style={{ display: "block", background: "rgba(0,0,0,0.5)" }}>
-                    <div className="modal-dialog">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Edit Item</h5>
-                                <button type="button" className="btn-close" onClick={() => setEditItem(null)} ></button>
-                            </div>
-                            <div className="modal-body">
-                                <div className="mb-3">
-                                    <label className="form-label">Item Name</label>
-                                    <input type="text" className="form-control" value={editItem.name}
-                                        onChange={(e) => setEditItem({ ...editItem, name: e.target.value }) } />
-                                </div>
-
-                                <div className="mb-3">
-                                    <label className="form-label">Price</label>
-                                    <input type="number" className="form-control" value={editItem.price}
-                                        onChange={(e) => setEditItem({ ...editItem, price: e.target.value }) } />
-                                </div>
-
-                                <div className="mb-3">
-                                    <label className="form-label">Cuisine</label>
-                                    <select className="form-select" value={editItem.cuisine}
-                                        onChange={(e) => setEditItem({ ...editItem, cuisine: e.target.value }) } >
-                                        <option value="Indian">Indian</option>
-                                        <option value="Chinese">Chinese</option>
-                                        <option value="Italian">Italian</option>
-                                        <option value="Fast Food">Fast Food</option>
-                                        <option value="Bakery">Bakery</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                </div>
-
-                                <div className="mb-3">
-                                    <label className="form-label">Type</label>
-                                    <select className="form-select" value={editItem.type}
-                                        onChange={(e) => setEditItem({ ...editItem, type: e.target.value }) } >
-                                        <option value="veg">Veg</option>
-                                        <option value="nonveg">Non-Veg</option>
-                                    </select>
-                                </div>
-
-                                <div className="mb-3">
-                                    <label className="form-label">Change Image</label>
-                                    <input type="file" className="form-control"
-                                        onChange={(e) => setEditItem({ ...editItem, image: e.target.files[0] })}  />
-                                </div>
-                            </div>
-                            <div className="modal-footer">
-                                <button className="btn btn-secondary" onClick={() => setEditItem(null)} >Close </button>
-                                <button className="btn btn-primary" onClick={handleEditSave} > Save Changes </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
-}
+};
 
 export default RestaurantDashboard;
