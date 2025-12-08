@@ -181,3 +181,26 @@ router.get("/dashboard/:id", async (req, res) => {
     }
 });
 module.exports = router;
+
+router.put("/update/:id", upload.single("image"), async (req, res) => {
+    try {
+        const updateData = req.body;
+
+        if (req.file) {
+            updateData.image = req.file.filename;
+        }
+
+        const restaurant = await Restaurant.findByIdAndUpdate(
+            req.params.id,
+            updateData,
+            { new: true }
+        );
+
+        res.json({ success: true, restaurant });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Update failed" });
+    }
+});
+
+module.exports = router;

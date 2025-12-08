@@ -5,6 +5,7 @@ const MenuManager = () => {
     const restaurantId = localStorage.getItem("restaurantId");
 
     // MISSING — now added
+    //eslint-disable-next-line
     const [restaurant, setRestaurant] = useState(null);
 
     const [menu, setMenu] = useState([]);

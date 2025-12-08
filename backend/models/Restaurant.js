@@ -15,6 +15,7 @@ const RestaurantSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     phone: { type: String },
+    image: { type: String }, // store image filename
     address: { type: String },
     cuisine: { type: String },
      menu: [MenuItemSchema]

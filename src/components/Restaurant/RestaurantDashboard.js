@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
-import "bootstrap/dist/css/bootstrap.min.css";
+// import "bootstrap/dist/css/bootstrap.min.css";
 
 const RestaurantDashboard = () => {
     const [restaurant, setRestaurant] = useState(null);
@@ -13,7 +14,19 @@ const RestaurantDashboard = () => {
 
     const [recentOrders, setRecentOrders] = useState([]);
 
-    const restaurantId = localStorage.getItem("restaurantId"); // saved during login
+    const restaurantId = localStorage.getItem("restaurantId");
+
+    // --------- EDIT PROFILE STATES ----------
+    const [showModal, setShowModal] = useState(false);
+    const [editData, setEditData] = useState({
+        name: "",
+        email: "",
+        phone: "",
+        address: "",
+        cuisine: "",
+        image: null,
+    });
+    const [previewImage, setPreviewImage] = useState("");
 
     // Fetch dashboard data
     useEffect(() => {
@@ -26,6 +39,20 @@ const RestaurantDashboard = () => {
                 setRestaurant(res.data.restaurant);
                 setStats(res.data.stats);
                 setRecentOrders(res.data.recentOrders);
+
+                // preload values
+                setEditData({
+                    name: res.data.restaurant.name,
+                    email: res.data.restaurant.email,
+                    phone: res.data.restaurant.phone,
+                    address: res.data.restaurant.address,
+                    cuisine: res.data.restaurant.cuisine,
+                    image: null,
+                });
+
+                setPreviewImage(
+                    `http://localhost:5000/uploads/${res.data.restaurant.image}`
+                );
             } catch (error) {
                 console.error("Dashboard Load Error:", error);
             }
@@ -33,6 +60,50 @@ const RestaurantDashboard = () => {
 
         fetchData();
     }, [restaurantId]);
+
+    // Handle Input Change
+    const handleChange = (e) => {
+        setEditData({ ...editData, [e.target.name]: e.target.value });
+    };
+
+    // Handle Image Upload
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        setEditData({ ...editData, image: file });
+        setPreviewImage(URL.createObjectURL(file));
+    };
+
+    // Submit Updated Data
+    const handleUpdate = async () => {
+        try {
+            const formData = new FormData();
+            formData.append("name", editData.name);
+            formData.append("email", editData.email);
+            formData.append("phone", editData.phone);
+            formData.append("address", editData.address);
+            formData.append("cuisine", editData.cuisine);
+
+            if (editData.image) {
+                formData.append("image", editData.image);
+            }
+
+            const response = await axios.put(
+                `http://localhost:5000/api/auth/restaurants/update/${restaurantId}`,
+                formData,
+                {
+                    headers: { "Content-Type": "multipart/form-data" },
+                }
+            );
+
+            alert("Profile Updated!");
+            setShowModal(false);
+            setRestaurant(response.data.restaurant);
+
+        } catch (error) {
+            console.error("Update Error:", error);
+            alert("Update failed!");
+        }
+    };
 
     if (!restaurant) return <h3 className="text-center mt-5">Loading...</h3>;
 
@@ -42,7 +113,6 @@ const RestaurantDashboard = () => {
             {/* Header */}
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <h2 className="fw-bold text-danger">🍽️ {restaurant.name} Dashboard</h2>
-                <button className="btn btn-outline-danger">Logout</button>
             </div>
 
             {/* Restaurant Info */}
@@ -61,11 +131,12 @@ const RestaurantDashboard = () => {
                         <p><strong>Email:</strong> {restaurant.email}</p>
                         <p><strong>Phone:</strong> {restaurant.phone}</p>
                         <p><strong>Address:</strong> {restaurant.address}</p>
+                        <p><strong>Cuisine:</strong> {restaurant.cuisine}</p>
                     </div>
                 </div>
             </div>
 
-            {/* Stats Section */}
+            {/* Stats */}
             <div className="row g-3">
                 <div className="col-md-3">
                     <div className="card shadow p-3 text-center">
@@ -96,12 +167,113 @@ const RestaurantDashboard = () => {
                 </div>
             </div>
 
-            {/* Actions */}
+            {/* Action Buttons */}
             <div className="text-center my-4">
-                <button className="btn btn-danger mx-2 px-4">➕ Add Menu Item</button>
+                <button className="btn btn-danger mx-2 px-4">
+                    <Link className="nav-link active" to="/restaurant/menu-manager">➕ Add Menu Item</Link>
+                </button>
+
                 <button className="btn btn-primary mx-2 px-4">📦 View Orders</button>
-                <button className="btn btn-secondary mx-2 px-4">⚙️ Edit Profile</button>
+
+                <button
+                    className="btn btn-secondary mx-2 px-4"
+                    onClick={() => setShowModal(true)}
+                >
+                    ⚙️ Edit Profile
+                </button>
             </div>
+
+            {/* ----------------------------------
+                EDIT PROFILE MODAL  
+            ------------------------------------ */}
+            {showModal && (
+                <div className="modal fade show d-block" style={{ background: "rgba(0,0,0,0.5)" }}>
+                    <div className="modal-dialog modal-lg">
+                        <div className="modal-content p-3">
+
+                            <div className="modal-header">
+                                <h5 className="modal-title">Edit Profile</h5>
+                                <button className="btn-close" onClick={() => setShowModal(false)}></button>
+                            </div>
+
+                            <div className="modal-body">
+                                <div className="row">
+                                    {/* Image Preview */}
+                                    <div className="col-md-4">
+                                        <img
+                                            src={previewImage}
+                                            alt="Preview"
+                                            className="img-fluid rounded mb-3"
+                                        />
+                                        <input
+                                            type="file"
+                                            className="form-control"
+                                            onChange={handleImageChange}
+                                        />
+                                    </div>
+
+                                    {/* Form Fields */}
+                                    <div className="col-md-8">
+                                        <input
+                                            type="text"
+                                            name="name"
+                                            placeholder="Restaurant Name"
+                                            className="form-control mb-2"
+                                            value={editData.name}
+                                            onChange={handleChange}
+                                        />
+
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            placeholder="Email"
+                                            className="form-control mb-2"
+                                            value={editData.email}
+                                            onChange={handleChange}
+                                        />
+
+                                        <input
+                                            type="text"
+                                            name="phone"
+                                            placeholder="Phone"
+                                            className="form-control mb-2"
+                                            value={editData.phone}
+                                            onChange={handleChange}
+                                        />
+
+                                        <input
+                                            type="text"
+                                            name="address"
+                                            placeholder="Address"
+                                            className="form-control mb-2"
+                                            value={editData.address}
+                                            onChange={handleChange}
+                                        />
+
+                                        <input
+                                            type="text"
+                                            name="cuisine"
+                                            placeholder="Cuisine Type"
+                                            className="form-control mb-2"
+                                            value={editData.cuisine}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="modal-footer">
+                                <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
+                                    Cancel
+                                </button>
+                                <button className="btn btn-success" onClick={handleUpdate}>
+                                    Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Menu Section */}
             <div className="card shadow my-4 p-3">
@@ -158,6 +330,7 @@ const RestaurantDashboard = () => {
                     </table>
                 )}
             </div>
+
         </div>
     );
 };
