@@ -32,17 +32,37 @@ router.post("/login", async (req, res) => {
     try {
         const { email, password } = req.body;
         let partner = await DeliveryPartner.findOne({ email });
-        if (!partner) return res.status(400).json({ msg: "Invalid Credentials" });
+        if (!partner) {
+            return res.json({ success: false, msg: "Invalid Credentials" });
+        }
 
         const isMatch = await bcrypt.compare(password, partner.password);
-        if (!isMatch) return res.status(400).json({ msg: "Invalid Credentials" });
+        if (!isMatch) {
+            return res.json({ success: false, msg: "Invalid Credentials" });
+        }
 
-        const token = jwt.sign({ id: partner._id, role: "delivery" }, JWT_SECRET, { expiresIn: "9h" });
+        const token = jwt.sign(
+            { id: partner._id, role: "delivery" },
+            JWT_SECRET,
+            { expiresIn: "9h" }
+        );
 
-        res.json({ token, partner });
+        return res.json({
+            success: true,
+            msg: "Login successful",
+            token,
+            userType: "delivery",
+            partner: {
+                id: partner._id,
+                name: partner.name,
+                email: partner.email
+            }
+        });
+
     } catch (err) {
-        res.status(500).json({ msg: "Server Error" });
+        return res.status(500).json({ success: false, msg: "Server Error" });
     }
 });
+
 
 module.exports = router;

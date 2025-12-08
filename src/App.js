@@ -6,6 +6,7 @@ import Login from "./components/Login";
 import AddRestaurant from "./components/AddRestaurant";
 import BiteHome from "./components/BiteHome";
 import RestaurantDashboard from "./components/Restaurant/RestaurantDashboard";
+import DeliveryPartnerDashboard from "./components/delivery/DeliveryPartnerDasboard";
 
 function App() {
   return (
@@ -19,6 +20,8 @@ function App() {
           <Route path="/add-restaurant" element={<AddRestaurant />} />
           <Route path="/home" element={<BiteHome/>} />
           <Route path="/restaurant-dashboard" element={<RestaurantDashboard/>} />
+          <Route path="/delivery-home" element={<DeliveryPartnerDashboard/>} />
+
         </Routes>
       </Router>
     </div>
