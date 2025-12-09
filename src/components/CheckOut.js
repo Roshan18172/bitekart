@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const CheckOut = () => {
+   const navigate = useNavigate();
   const userId = localStorage.getItem("userId");
   const [cart, setCart] = useState(null);
   const [user, setUser] = useState(null);
@@ -33,14 +35,29 @@ const CheckOut = () => {
   }, [userId]);
 
   const placeOrder = async () => {
-    try {
-      await axios.post("http://localhost:5000/api/cart/checkout", { userId });
-      alert("Order Placed Successfully!");
-    } catch (err) {
-      console.error(err);
-      alert("Error placing order");
+  try {
+    const res = await axios.post("http://localhost:5000/api/orders/create", {
+      userId,
+      items: cart.items,
+      subtotal,
+      gst,
+      deliveryCharge,
+      total: grandTotal,
+      restaurantId: cart.items[0].restaurantId,
+    });
+
+    if (res.data.success) {
+      alert("Order placed successfully!");
+      // Clear cart from frontend
+      localStorage.removeItem("cart"); 
+      navigate("/payment"); // Redirect to payment page
     }
-  };
+  } catch (err) {
+    console.error(err);
+    alert("Failed to place order");
+  }
+};
+
 
   if (!cart || !user || !restaurant) return <p>Loading...</p>;
 

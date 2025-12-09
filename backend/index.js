@@ -16,6 +16,7 @@ app.use("/api/auth/restaurants", require('./routes/authRestaurant')); // Use the
 app.use("/api/auth/deliveries", require('./routes/authDelivery')); // Use the auth routes for DeliveryPartners
 app.use("/api/public/restaurants", require("./routes/restaurantPublicRoutes")); // Public restaurant routes
 app.use("/api/cart", require("./routes/cartRoutes")); // Cart routes
+app.use("/api/orders", require("./routes/orderRoute")); // Order routes
 
 app.listen(PORT, () => {   
     console.log(`BiteKart Server is running on port http://localhost:${PORT}`);

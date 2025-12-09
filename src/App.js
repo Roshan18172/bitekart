@@ -11,6 +11,7 @@ import MenuManager from "./components/Restaurant/MenuManager";
 import RestaurantMenu from "./components/Restaurant/RestaurantMenu";
 import CheckOut from "./components/CheckOut";
 import Cart from "./components/Cart";
+import PaymentPage from "./components/PaymentPage";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/restaurant/:id" element={<RestaurantMenu/>} />
           <Route path="/checkout" element={<CheckOut/>} />
           <Route path="/cart" element={<Cart/>} />
+          <Route path="/payment" element={<PaymentPage/>} />
 
         </Routes>
       </Router>
