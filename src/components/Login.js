@@ -44,10 +44,15 @@ const Login = () => {
         }
         if (userType === "delivery" && res.data.partner && res.data.partner.name) {
           localStorage.setItem("deliveryName", res.data.partner.name);
+          localStorage.setItem("deliveryId", res.data.partner._id);
         }
-        if (userType === "user" && res.data.user && res.data.user.name) {
-          localStorage.setItem("userName", res.data.user.name);
+        if (userType === "user" && res.data.data) {
+          const user = res.data.data;
+          localStorage.setItem("userName", user.name);
+          localStorage.setItem("userId", user._id);
+          localStorage.setItem("userData", JSON.stringify(user));
         }
+
 
         // Optional: save additional data
         if (res.data.data) {
@@ -73,7 +78,7 @@ const Login = () => {
 
   return (
     <div className="container-fluid d-flex justify-content-center align-items-center bgpic"
-         style={{ minHeight: "92vh" }}>
+      style={{ minHeight: "92vh" }}>
       <div className="card shadow-lg p-4 w-50">
         <h2 className="text-center text-danger fw-bold mb-3">Login to BiteKart</h2>
 

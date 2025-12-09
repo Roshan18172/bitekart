@@ -14,6 +14,8 @@ app.use("/uploads", express.static("uploads"));
 app.use("/api/auth/users", require('./routes/authUser')); // Use the auth routes for Users
 app.use("/api/auth/restaurants", require('./routes/authRestaurant')); // Use the auth routes for Restaurants
 app.use("/api/auth/deliveries", require('./routes/authDelivery')); // Use the auth routes for DeliveryPartners
+app.use("/api/public/restaurants", require("./routes/restaurantPublicRoutes")); // Public restaurant routes
+app.use("/api/cart", require("./routes/cartRoutes")); // Cart routes
 
 app.listen(PORT, () => {   
     console.log(`BiteKart Server is running on port http://localhost:${PORT}`);
