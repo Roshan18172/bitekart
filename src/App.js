@@ -12,7 +12,8 @@ import RestaurantMenu from "./components/Restaurant/RestaurantMenu";
 import CheckOut from "./components/CheckOut";
 import Cart from "./components/Cart";
 import PaymentPage from "./components/PaymentPage";
-import OrderSuccess from "./components/OrderSuccess";
+import OrderSuccess from "./components/Orders/OrderSuccess";
+import MyOrders from "./components/Orders/MyOrders";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/cart" element={<Cart/>} />
           <Route path="/payment/:orderId" element={<PaymentPage/>} />
           <Route path="/order-success" element={<OrderSuccess/>} />
+          <Route path="/my-orders" element={<MyOrders/>} />
 
         </Routes>
       </Router>

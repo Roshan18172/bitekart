@@ -60,7 +60,7 @@ const NavBar = () => {
                     <Link className="nav-link active" to="/home">Home</Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link active" to="/user/orders">My Orders</Link>
+                    <Link className="nav-link active" to="/my-orders">My Orders</Link>
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link active" to="/cart"><i className="bi bi-cart"></i>Cart</Link>

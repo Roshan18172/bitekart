@@ -3,6 +3,7 @@ const Order = require("../models/Order");
 const Cart = require("../models/Cart");
 const router = express.Router();
 
+/* ------------------- CREATE ORDER ------------------- */
 router.post("/create", async (req, res) => {
     try {
         const { userId, items, subtotal, gst, deliveryCharge, total, restaurantId } = req.body;
@@ -11,7 +12,6 @@ router.post("/create", async (req, res) => {
             return res.status(400).json({ success: false, msg: "Invalid order data" });
         }
 
-        // Create order
         const order = new Order({
             userId,
             restaurantId,
@@ -20,17 +20,16 @@ router.post("/create", async (req, res) => {
             gst,
             deliveryCharge,
             total,
-            status: "pending", 
-            paymentStatus: "unpaid"   // ⬅ NEW FIELD (add in model)
+            status: "pending",
+            paymentStatus: "unpaid"
         });
 
         await order.save();
 
-        // Clear cart
         await Cart.findOneAndUpdate({ userId }, { items: [] });
 
-        res.json({ 
-            success: true, 
+        res.json({
+            success: true,
             orderId: order._id,
             msg: "Order placed successfully"
         });
@@ -41,27 +40,26 @@ router.post("/create", async (req, res) => {
     }
 });
 
-module.exports = router;
-
+/* ------------------- PAYMENT API ------------------- */
 router.post("/pay", async (req, res) => {
-  try {
-    const { orderId, paymentMethod } = req.body;
+    try {
+        const { orderId, paymentMethod } = req.body;
 
-    await Order.findByIdAndUpdate(orderId, {
-      paymentStatus: "paid",
-      status: "success",
-      paymentMethod
-    });
+        await Order.findByIdAndUpdate(orderId, {
+            paymentStatus: "paid",
+            status: "success",
+            paymentMethod
+        });
 
-    res.json({ success: true, msg: "Payment successful!" });
+        res.json({ success: true, msg: "Payment successful!" });
 
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, msg: "Payment failed" });
-  }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, msg: "Payment failed" });
+    }
 });
-module.exports = router;
 
+/* ------------------- GET SINGLE ORDER ------------------- */
 router.get("/:orderId", async (req, res) => {
     try {
         const order = await Order.findById(req.params.orderId);
@@ -70,4 +68,16 @@ router.get("/:orderId", async (req, res) => {
         res.status(500).json({ msg: "Failed to fetch order" });
     }
 });
+
+/* ------------------- GET ALL ORDERS OF A USER ------------------- */
+router.get("/user/:userId", async (req, res) => {
+    try {
+        const orders = await Order.find({ userId: req.params.userId }).sort({ createdAt: -1 });
+        res.json(orders);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ msg: "Failed to fetch orders" });
+    }
+});
+
 module.exports = router;
