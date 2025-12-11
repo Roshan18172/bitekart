@@ -15,6 +15,7 @@ const Cart = () => {
 
   useEffect(() => {
     loadCart();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Increase or decrease item qty

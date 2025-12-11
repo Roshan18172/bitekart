@@ -80,4 +80,14 @@ router.get("/user/:userId", async (req, res) => {
     }
 });
 
+router.delete("/cancel/:orderId", async (req, res) => {
+  try {
+    await Order.findByIdAndUpdate(req.params.orderId, { status: "Cancelled" });
+    res.json({ msg: "Order cancelled successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Server error" });
+  }
+});
+
 module.exports = router;

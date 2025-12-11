@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import "./styles..css";
 
 const Register = () => {
@@ -12,33 +13,75 @@ const Register = () => {
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
-    // localStorage.clear();
-    const handleSubmit = (e) => {
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Register Data:", form);
-        // TODO: Call backend API /api/auth/register
+
+        try {
+            let apiUrl = "";
+            let dataToSend = {
+                name: form.name,
+                email: form.email,
+                password: form.password,
+            };
+
+            // SELECT ROUTE BY ROLE
+            if (form.role === "customer") {
+                apiUrl = "http://localhost:5000/api/auth/users/register";
+                dataToSend.phone = "";   // you can collect phone field if needed
+                dataToSend.address = "";
+            }
+            else if (form.role === "restaurant_owner") {
+                apiUrl = "http://localhost:5000/api/auth/restaurants/register";
+                dataToSend.phone = "";
+                dataToSend.address = "";
+                dataToSend.cuisine = "";
+            }
+            else if (form.role === "delivery") {
+                apiUrl = "http://localhost:5000/api/auth/delivery/register";
+                dataToSend.phone = "";
+                dataToSend.vehicleType = "";
+            }
+
+            // API CALL
+            const res = await axios.post(apiUrl, dataToSend);
+
+            alert("Registration Successful!");
+            console.log("RESPONSE:", res.data);
+
+            // Save Token
+            localStorage.setItem("token", res.data.token);
+            localStorage.setItem("user", JSON.stringify(res.data));
+
+            window.location.href = "/login";
+        }
+        catch (err) {
+            console.error("REGISTER ERROR:", err);
+            alert(err.response?.data?.msg || "Registration failed");
+        }
     };
 
     return (
         <div className="container-fluid d-flex justify-content-center align-items-center bgpic" style={{ minHeight: "92vh" }}>
             <div className="card shadow-lg p-3 w-50">
                 <h2 className="text-center text-danger fw-bold mb-3">Create an Account</h2>
+
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                         <label className="form-label">Name</label>
-                        <input type="text" name="name" className="form-control" placeholder="Enter your name"
+                        <input type="text" name="name" className="form-control" placeholder="Enter Your Name"
                             value={form.name} onChange={handleChange} required />
                     </div>
 
                     <div className="mb-3">
                         <label className="form-label">Email Address</label>
-                        <input type="email" name="email" className="form-control" placeholder="Enter your email"
+                        <input type="email" name="email" className="form-control" placeholder="Enter Email Address"
                             value={form.email} onChange={handleChange} required />
                     </div>
 
                     <div className="mb-3">
                         <label className="form-label">Password</label>
-                        <input type="password" name="password" className="form-control" placeholder="Enter your password"
+                        <input type="password" name="password" className="form-control" placeholder="Enter Password"
                             value={form.password} onChange={handleChange} required />
                     </div>
 
@@ -53,6 +96,7 @@ const Register = () => {
 
                     <button type="submit" className="btn btn-danger w-100">Register</button>
                 </form>
+
                 <p className="text-center mt-3">
                     Already have an account? <a href="/login" className="text-danger fw-bold">Login</a>
                 </p>

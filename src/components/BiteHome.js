@@ -36,10 +36,10 @@ const BiteHome = () => {
             Cuisines
           </button>
           <ul className="dropdown-menu">
-            <li><a className="dropdown-item" href="#">North Indian</a></li>
-            <li><a className="dropdown-item" href="#">Chinese</a></li>
-            <li><a className="dropdown-item" href="#">Italian</a></li>
-            <li><a className="dropdown-item" href="#">Fast Food</a></li>
+            <li><a className="dropdown-item" href="/">North Indian</a></li>
+            <li><a className="dropdown-item" href="/">Chinese</a></li>
+            <li><a className="dropdown-item" href="/">Italian</a></li>
+            <li><a className="dropdown-item" href="/">Fast Food</a></li>
           </ul>
         </div>
       </div>

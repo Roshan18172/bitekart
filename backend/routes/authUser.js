@@ -2,6 +2,7 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const authMiddleware = require("../middleware/authMiddleware");
 
 const router = express.Router();
 const JWT_SECRET = "mysecretkey";
@@ -59,6 +60,25 @@ router.post("/login", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ success: false, msg: "Server Error" });
     }
+});
+
+router.get("/profile", authMiddleware(), async (req, res) => {
+    const user = await User.findById(req.user.id).select("-password");
+    res.json(user);
+});
+
+router.put("/update", authMiddleware(), async (req, res) => {
+    const updates = req.body;
+
+    // If updating password, hash it
+    if (updates.password) {
+        const salt = await bcrypt.genSalt(10);
+        updates.password = await bcrypt.hash(updates.password, salt);
+    }
+
+    const user = await User.findByIdAndUpdate(req.user.id, updates, { new: true }).select("-password");
+
+    res.json(user);
 });
 
 

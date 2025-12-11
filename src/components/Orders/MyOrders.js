@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const MyOrders = () => {
     const [orders, setOrders] = useState([]);
@@ -22,6 +22,23 @@ const MyOrders = () => {
         loadOrders();
     }, [userId]);
 
+    // CANCEL ORDER
+    const handleCancelOrder = async (orderId) => {
+        if (!window.confirm("Are you sure you want to cancel this order?")) return;
+
+        try {
+            await axios.delete(`http://localhost:5000/api/orders/cancel/${orderId}`);
+
+            // Remove from UI instantly
+            setOrders((prev) => prev.filter((order) => order._id !== orderId));
+
+            alert("Order cancelled successfully!");
+        } catch (error) {
+            console.error("CANCEL ORDER ERROR:", error);
+            alert("Failed to cancel order");
+        }
+    };
+
     if (!orders.length) {
         return (
             <div className="container my-5 text-center">
@@ -40,16 +57,25 @@ const MyOrders = () => {
                     <div className="card-body">
 
                         {/* Order ID + Status */}
-                        <div className="d-flex justify-content-between">
-                            <h5 className="card-title">
-                                Order #{order._id.slice(-10)}
-                            </h5>
+                        <div className="d-flex justify-content-between align-items-center">
+                            <h5 className="card-title">Order #{order._id.slice(-10)}</h5>
+
+                            <Link
+                                className="badge bg-primary"
+                                to={`/track-order/${order._id}`}
+                            >
+                                Track Order
+                            </Link>
 
                             <span
                                 className={`badge 
-                                    ${order.paymentStatus === "paid" ? "bg-success" :
-                                        order.paymentStatus === "unpaid" ? "bg-warning text-dark" :
-                                            "bg-secondary"}`}
+                                    ${
+                                        order.paymentStatus === "paid"
+                                            ? "bg-success"
+                                            : order.paymentStatus === "unpaid"
+                                            ? "bg-warning text-dark"
+                                            : "bg-secondary"
+                                    }`}
                             >
                                 {order.status.toUpperCase()}
                             </span>
@@ -68,19 +94,20 @@ const MyOrders = () => {
                                 </span>
                                 <span>₹{item.price * item.quantity}</span>
                             </div>
-
                         ))}
+
                         <div className="d-flex justify-content-between py-1">
                             <span className="text-muted" style={{ fontSize: "0.9em" }}>
                                 (GST: 5%)
                             </span>
-                            <span>₹{order.gst} </span>
+                            <span>₹{order.gst}</span>
                         </div>
+
                         <div className="d-flex justify-content-between py-1">
                             <span className="text-muted" style={{ fontSize: "0.9em" }}>
                                 Delivery Charge
                             </span>
-                            <span>₹{order.deliveryCharge} </span>
+                            <span>₹{order.deliveryCharge}</span>
                         </div>
 
                         <hr />
@@ -95,16 +122,29 @@ const MyOrders = () => {
                             Ordered on: {new Date(order.createdAt).toLocaleString()}
                         </p>
 
-                        {/* PAY NOW BUTTON */}
-                        {order.paymentStatus === "unpaid" && order.status === "pending" && (
-                            <button
-                                className="btn btn-success w-100 mt-3"
-                                onClick={() => navigate(`/payment/${order._id}`)}
-                            >
-                                Pay Now
-                            </button>
-                        )}
+                        {/* PAY + CANCEL BUTTONS */}
+                        {order.paymentStatus === "unpaid" &&
+                            order.status === "pending" && (
+                                <div className="d-flex gap-2 mt-3">
+                                    <button
+                                        className="btn btn-success w-50"
+                                        onClick={() =>
+                                            navigate(`/payment/${order._id}`)
+                                        }
+                                    >
+                                        Pay Now
+                                    </button>
 
+                                    <button
+                                        className="btn btn-danger w-50"
+                                        onClick={() =>
+                                            handleCancelOrder(order._id)
+                                        }
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            )}
                     </div>
                 </div>
             ))}
