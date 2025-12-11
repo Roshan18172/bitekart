@@ -20,20 +20,54 @@ router.post("/create", async (req, res) => {
             gst,
             deliveryCharge,
             total,
-            status: "pending", // or "placed"
-            createdAt: new Date()
+            status: "pending", 
+            paymentStatus: "unpaid"   // ⬅ NEW FIELD (add in model)
         });
 
         await order.save();
 
-        // Clear user's cart
+        // Clear cart
         await Cart.findOneAndUpdate({ userId }, { items: [] });
 
-        res.json({ success: true, orderId: order._id, msg: "Order placed successfully" });
+        res.json({ 
+            success: true, 
+            orderId: order._id,
+            msg: "Order placed successfully"
+        });
+
     } catch (err) {
         console.error(err);
         res.status(500).json({ success: false, msg: "Server error" });
     }
 });
 
+module.exports = router;
+
+router.post("/pay", async (req, res) => {
+  try {
+    const { orderId, paymentMethod } = req.body;
+
+    await Order.findByIdAndUpdate(orderId, {
+      paymentStatus: "paid",
+      status: "success",
+      paymentMethod
+    });
+
+    res.json({ success: true, msg: "Payment successful!" });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, msg: "Payment failed" });
+  }
+});
+module.exports = router;
+
+router.get("/:orderId", async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.orderId);
+        res.json(order);
+    } catch (err) {
+        res.status(500).json({ msg: "Failed to fetch order" });
+    }
+});
 module.exports = router;

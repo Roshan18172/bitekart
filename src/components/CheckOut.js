@@ -47,17 +47,16 @@ const CheckOut = () => {
     });
 
     if (res.data.success) {
-      alert("Order placed successfully!");
-      // Clear cart from frontend
-      localStorage.removeItem("cart"); 
-      navigate("/payment"); // Redirect to payment page
+      const orderId = res.data.orderId;
+
+      // Redirect to payment page with orderId
+      navigate(`/payment/${orderId}`);
     }
   } catch (err) {
     console.error(err);
     alert("Failed to place order");
   }
 };
-
 
   if (!cart || !user || !restaurant) return <p>Loading...</p>;
 

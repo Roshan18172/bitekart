@@ -15,8 +15,10 @@ const OrderSchema = new mongoose.Schema({
     gst: Number,
     deliveryCharge: Number,
     total: Number,
-    status: { type: String, default: "pending" }, // pending, accepted, delivered
+    status: { type: String, default: "pending" }, 
+    paymentStatus: { type: String, default: "unpaid" }, 
     createdAt: { type: Date, default: Date.now }
 });
+
 
 module.exports = mongoose.model("Order", OrderSchema);

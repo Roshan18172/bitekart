@@ -34,7 +34,7 @@ const RestaurantMenu = () => {
     };
 
     loadRestaurant();
-  }, [id]);
+  }, [id, userId]);
 
   // Add item to cart
   const addToCart = async (item) => {
