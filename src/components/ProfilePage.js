@@ -4,8 +4,7 @@ import axios from "axios";
 const ProfilePage = () => {
     const [user, setUser] = useState(null);
     const [editData, setEditData] = useState({});
-    const [profileImage, setProfileImage] = useState(null);
-
+    
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -27,36 +26,6 @@ const ProfilePage = () => {
         setEditData({ ...editData, [e.target.name]: e.target.value });
     };
 
-    const handleImageUpload = async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const formData = new FormData();
-        formData.append("profilePic", file);
-
-        try {
-            const token = localStorage.getItem("token");
-
-            const res = await axios.put(
-                "http://localhost:5000/api/auth/users/upload-profile",
-                formData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "multipart/form-data",
-                    },
-                }
-            );
-
-            setUser({ ...user, profilePic: res.data.profilePic });
-
-            alert("Profile Picture Updated!");
-        } catch (error) {
-            console.log(error);
-            alert("Upload Failed!");
-        }
-    };
-
     const handleUpdate = async () => {
         try {
             const token = localStorage.getItem("token");
@@ -67,6 +36,7 @@ const ProfilePage = () => {
 
             setUser(res.data);
             alert("Profile Updated Successfully!");
+
             document.getElementById("closeModalBtn").click();
         } catch (err) {
             console.error(err);
@@ -78,66 +48,8 @@ const ProfilePage = () => {
 
     return (
         <div className="container mt-5">
-
-            {/* PROFILE HEADER */}
-            <div className="card shadow p-4 mb-4 text-center">
-                <label style={{ cursor: "pointer" }}>
-                    <img
-                        src={user.profilePic || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"}
-                        alt="profile"
-                        className="rounded-circle"
-                        width="120"
-                        height="120"
-                    />
-                    <input
-                        type="file"
-                        accept="image/*"
-                        hidden
-                        onChange={handleImageUpload}
-                    />
-                </label>
-
-                <h3 className="mt-3">{user.name}</h3>
-                <p>{user.email}</p>
-
-                <button
-                    className="btn btn-primary mt-3"
-                    data-bs-toggle="modal"
-                    data-bs-target="#editModal"
-                >
-                    Edit Profile
-                </button>
-            </div>
-
-            {/* DASHBOARD STATS */}
-            <div className="row">
-                <div className="col-md-4">
-                    <div className="card shadow p-3 text-center">
-                        <h5>Total Orders</h5>
-                        <h2 className="text-primary">{user.totalOrders || 0}</h2>
-                    </div>
-                </div>
-
-                <div className="col-md-4">
-                    <div className="card shadow p-3 text-center">
-                        <h5>Canceled Orders</h5>
-                        <h2 className="text-danger">{user.canceledOrders || 0}</h2>
-                    </div>
-                </div>
-
-                <div className="col-md-4">
-                    <div className="card shadow p-3 text-center">
-                        <h5>Total Spent</h5>
-                        <h2 className="text-success">₹ {user.totalSpent || 0}</h2>
-                    </div>
-                </div>
-            </div>
-
-            <br />
-
-            {/* USER DETAILS */}
-            <div className="card shadow p-4 mt-4">
-                <h4 className="mb-3 text-primary">Account Details</h4>
+            <div className="card shadow p-4">
+                <h2 className="text-center text-primary mb-4">My Profile</h2>
 
                 <div className="row mb-3">
                     <div className="col-md-6"><strong>Name:</strong> {user.name}</div>
@@ -148,9 +60,13 @@ const ProfilePage = () => {
                     <div className="col-md-6"><strong>Phone:</strong> {user.phone}</div>
                     <div className="col-md-6"><strong>Address:</strong> {user.address}</div>
                 </div>
+
+                <button className="btn btn-primary w-100 mt-3" data-bs-toggle="modal" data-bs-target="#editModal">
+                    Edit Profile
+                </button>
             </div>
 
-            {/* EDIT MODAL */}
+            {/* MODAL */}
             <div className="modal fade" id="editModal" tabIndex="-1">
                 <div className="modal-dialog">
                     <div className="modal-content">
@@ -178,7 +94,7 @@ const ProfilePage = () => {
                                 <label>Password (optional)</label>
                                 <input type="password" className="form-control"
                                     name="password"
-                                    placeholder="Enter new password"
+                                    placeholder="Enter new password" 
                                     onChange={handleChange} />
                             </div>
 
@@ -204,7 +120,6 @@ const ProfilePage = () => {
                     </div>
                 </div>
             </div>
-
         </div>
     );
 };

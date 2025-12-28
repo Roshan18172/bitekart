@@ -5,15 +5,33 @@ const Home = () => {
   return (
     <div>
       {/* Hero Section */}
-      <section className="text-center text-light d-flex flex-column justify-content-center align-items-center"
-        style={{ height: "70vh", background: "url('https://t4.ftcdn.net/jpg/02/92/20/37/360_F_292203735_CSsyqyS6A4Z9Czd4Msf7qZEhoxjpzZl1.jpg') center/cover no-repeat" }}>
-        <h1 className="fw-bold display-3">Delicious Food, Delivered Fast 🚀</h1>
-        <p className="fs-5">Order from your favorite restaurants or manage your own on BiteKart</p>
+      <section
+        className="d-flex flex-column justify-content-center align-items-center text-center"
+        style={{
+          height: "70vh",
+          backgroundImage: `linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)),url('https://img.freepik.com/free-photo/flat-lay-arrangement-with-salad-box-sauce_23-2148247883.jpg?semt=ais_hybrid&w=740&q=80')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <h1 className="fw-bold display-3 text-white">
+          Delicious Food, Delivered Fast 🚀
+        </h1>
+
+        <p className="fs-5 text-white">
+          Order from your favorite restaurants or manage your own on BiteKart
+        </p>
+
         <div className="input-group w-50 mt-3">
-          <input type="text" className="form-control" placeholder="Search restaurants or cuisines..." />
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search restaurants or cuisines..."
+          />
           <button className="btn btn-warning">Search</button>
         </div>
       </section>
+
 
       {/* Features Section */}
       <section className="container py-5">
@@ -39,7 +57,7 @@ const Home = () => {
         </div>
       </section>
 
-      <Footer/>
+      <Footer />
 
       {/* Footer */}
       {/* <footer className="bg-dark text-light text-center py-3">

@@ -16,6 +16,7 @@ import OrderSuccess from "./components/Orders/OrderSuccess";
 import MyOrders from "./components/Orders/MyOrders";
 import TrackOrder from "./components/Orders/TrackOrder";
 import ProfilePage from "./components/ProfilePage";
+import RestaurantOrders from "./components/Restaurant/RestaurantOrders";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
           <Route path="/my-orders" element={<MyOrders/>} />
           <Route path="/track-order/:orderId" element={<TrackOrder/>} />
           <Route path="/profile" element={<ProfilePage/>} />
+          <Route path="/manage-orders" element={<RestaurantOrders/>}/>
 
         </Routes>
       </Router>

@@ -80,33 +80,35 @@ const Cart = () => {
         </div>
       ))}
 
-      {/* Price Summary */}
-      <div className="card p-3 mt-3">
-        <h4>Price Details</h4>
-        <hr />
+      {/* Price Summary - Show only if cart has items */}
+      {cart.items.length > 0 && (
+        <div className="card p-3 mt-3">
+          <h4>Price Details</h4>
+          <hr />
 
-        <p className="d-flex justify-content-between">
-          <span>Subtotal:</span> <span>₹{subtotal.toFixed(2)}</span>
-        </p>
+          <p className="d-flex justify-content-between">
+            <span>Subtotal:</span> <span>₹{subtotal.toFixed(2)}</span>
+          </p>
 
-        <p className="d-flex justify-content-between">
-          <span>GST (5%):</span> <span>₹{gst.toFixed(2)}</span>
-        </p>
+          <p className="d-flex justify-content-between">
+            <span>GST (5%):</span> <span>₹{gst.toFixed(2)}</span>
+          </p>
 
-        <p className="d-flex justify-content-between">
-          <span>Delivery Charge:</span> <span>₹{deliveryCharge}</span>
-        </p>
+          <p className="d-flex justify-content-between">
+            <span>Delivery Charge:</span> <span>₹{deliveryCharge}</span>
+          </p>
 
-        <hr />
+          <hr />
 
-        <h4 className="d-flex justify-content-between">
-          <span>Total:</span> <span>₹{grandTotal.toFixed(2)}</span>
-        </h4>
+          <h4 className="d-flex justify-content-between">
+            <span>Total:</span> <span>₹{grandTotal.toFixed(2)}</span>
+          </h4>
 
-        <button className="btn btn-success w-100 mt-3" onClick={checkout}>
-          Proceed to Checkout
-        </button>
-      </div>
+          <button className="btn btn-success w-100 mt-3" onClick={checkout}>
+            Proceed to Checkout
+          </button>
+        </div>
+      )}
     </div>
   );
 };

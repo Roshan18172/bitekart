@@ -1,8 +1,16 @@
 const mongoose = require("mongoose");
 
 const OrderSchema = new mongoose.Schema({
-    userId: String,
-    restaurantId: String,
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    },
+    restaurantId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Restaurant",
+        required: true
+    },
     items: [
         {
             itemId: String,
@@ -15,10 +23,22 @@ const OrderSchema = new mongoose.Schema({
     gst: Number,
     deliveryCharge: Number,
     total: Number,
-    status: { type: String, default: "pending" }, 
-    paymentStatus: { type: String, default: "unpaid" }, 
+
+    status: {
+        type: String,
+        enum: ["pending", "accepted", "cooking", "dispatched", "delivered", "cancelled" ],
+        default: "pending"
+    },
+
+    paymentStatus: {
+        type: String,
+        enum: ["unpaid", "paid"],
+        default: "unpaid"
+    },
+
+    paymentMethod: String,
+
     createdAt: { type: Date, default: Date.now }
 });
-
 
 module.exports = mongoose.model("Order", OrderSchema);

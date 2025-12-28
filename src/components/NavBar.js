@@ -84,6 +84,11 @@ const NavBar = () => {
                       Menu
                     </Link>
                   </li>
+                  <li className="nav-item">
+                    <Link className="nav-link active" to="/manage-orders">
+                      Orders
+                    </Link>
+                  </li>
                 </>
               )}
 
