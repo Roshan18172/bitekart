@@ -173,7 +173,9 @@ const RestaurantDashboard = () => {
                     <Link className="nav-link active" to="/restaurant/menu-manager">➕ Add Menu Item</Link>
                 </button>
 
-                <button className="btn btn-primary mx-2 px-4">📦 View Orders</button>
+                <button className="btn btn-primary mx-2 px-4">
+                    <Link className="nav-link active" to="/manage-orders">📦 View Orders</Link>
+                </button>
 
                 <button
                     className="btn btn-secondary mx-2 px-4"
@@ -311,7 +313,6 @@ const RestaurantDashboard = () => {
                         <thead className="table-danger">
                             <tr>
                                 <th>Order ID</th>
-                                <th>Customer</th>
                                 <th>Total</th>
                                 <th>Status</th>
                             </tr>
@@ -321,7 +322,6 @@ const RestaurantDashboard = () => {
                             {recentOrders.map((order) => (
                                 <tr key={order._id}>
                                     <td>{order._id}</td>
-                                    <td>{order.customerName}</td>
                                     <td>₹{order.total}</td>
                                     <td>
                                         <span className="badge bg-success">{order.status}</span>

@@ -5,6 +5,7 @@ const Restaurant = require("../models/Restaurant");
 const multer = require("multer");
 const router = express.Router();
 const JWT_SECRET = "mysecretkey";
+const Order = require("../models/Order")
 
 // -------------------- Multer Config --------------------
 const storage = multer.diskStorage({
@@ -152,35 +153,64 @@ router.delete("/:id/menu/:itemId", async (req, res) => {
 });
 module.exports = router;
 
-router.get("/dashboard/:id", async (req, res) => {
-    try {
-        const restaurant = await Restaurant.findById(req.params.id);
+router.get("/dashboard/:restaurantId", async (req, res) => {
+  try {
+    const { restaurantId } = req.params;
 
-        if (!restaurant) {
-            return res.status(404).json({ message: "Restaurant not found" });
-        }
-
-        // Dashboard stats
-        const stats = {
-            menuCount: restaurant.menu.length,
-            orderCount: 0,          // add real orders later
-            ratingCount: 0,         // add ratings later
-            todayEarnings: 0        // add earning logic later
-        };
-
-        res.json({
-            success: true,
-            restaurant,
-            stats,
-            recentOrders: []  // empty for now
-        });
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Server error" });
+    // 1️⃣ Restaurant details
+    const restaurant = await Restaurant.findById(restaurantId);
+    if (!restaurant) {
+      return res.status(404).json({ msg: "Restaurant not found" });
     }
+
+    // 2️⃣ TOTAL orders count
+    const orderCount = await Order.countDocuments({
+      restaurantId
+    });
+
+    // 3️⃣ Recent orders (last 5)
+    const recentOrders = await Order.find({ restaurantId })
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .select("customerName total status createdAt");
+
+    // 4️⃣ Today earnings
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const todayOrders = await Order.find({
+      restaurantId,
+      status: "delivered",
+      createdAt: { $gte: today }
+    });
+
+    const todayEarnings = todayOrders.reduce(
+      (sum, order) => sum + order.total,
+      0
+    );
+
+    // 5️⃣ Ratings count (safe fallback)
+    const ratingCount = restaurant.ratings
+      ? restaurant.ratings.length
+      : 0;
+
+    res.json({
+      restaurant,
+      stats: {
+        menuCount: restaurant.menu.length,
+        orderCount,
+        ratingCount,
+        todayEarnings
+      },
+      recentOrders
+    });
+
+  } catch (error) {
+    console.error("Dashboard Error:", error);
+    res.status(500).json({ msg: "Server Error" });
+  }
 });
-module.exports = router;
+
 
 router.put("/update/:id", upload.single("image"), async (req, res) => {
     try {
