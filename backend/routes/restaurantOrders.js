@@ -34,7 +34,7 @@ router.put("/cooking/:orderId", async (req, res) => {
 router.put("/dispatch/:orderId", async (req, res) => {
     const order = await Order.findByIdAndUpdate(
         req.params.orderId,
-        { status: "dispatched" },
+        { status: "ready_for_pickup" },
         { new: true }
     );
     res.json(order);

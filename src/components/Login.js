@@ -42,9 +42,9 @@ const Login = () => {
           localStorage.setItem("restaurantName", res.data.data.name);
           localStorage.setItem("restaurantId", res.data.data._id);
         }
-        if (userType === "delivery" && res.data.partner && res.data.partner.name) {
-          localStorage.setItem("deliveryName", res.data.partner.name);
-          localStorage.setItem("deliveryId", res.data.partner._id);
+        if (userType === "delivery" && res.data.partner ) {
+          localStorage.setItem("partnerName", res.data.partner.name);
+          localStorage.setItem("partnerId", res.data.partner.id);
         }
         if (userType === "user" && res.data.data) {
           const user = res.data.data;

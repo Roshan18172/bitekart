@@ -9,7 +9,7 @@ const NavBar = () => {
   let name = "";
   if (role === "user") name = localStorage.getItem("userName");
   if (role === "restaurant") name = localStorage.getItem("restaurantName");
-  if (role === "delivery") name = localStorage.getItem("deliveryName");     // store name on login
+  if (role === "delivery") name = localStorage.getItem("partnerName");     // store name on login
 
   const handleLogout = () => {
     localStorage.clear();
@@ -101,7 +101,7 @@ const NavBar = () => {
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link active" to="/delivery/tasks">
+                    <Link className="nav-link active" to="/delivery-tasks">
                       My Tasks
                     </Link>
                   </li>

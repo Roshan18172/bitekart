@@ -11,6 +11,11 @@ const OrderSchema = new mongoose.Schema({
         ref: "Restaurant",
         required: true
     },
+    deliveryPartnerId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "DeliveryPartner",
+        default: null
+    },
     items: [
         {
             itemId: String,
@@ -26,7 +31,15 @@ const OrderSchema = new mongoose.Schema({
 
     status: {
         type: String,
-        enum: ["pending", "accepted", "cooking", "dispatched", "delivered", "cancelled" ],
+        enum: ["pending",
+            "accepted",
+            "cooking",
+            "ready_for_pickup",
+            "picked_up",
+            "reached_location",
+            "out_for_delivery",
+            "delivered",
+            "cancelled"],
         default: "pending"
     },
 
