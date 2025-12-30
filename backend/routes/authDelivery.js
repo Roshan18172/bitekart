@@ -2,9 +2,21 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const DeliveryPartner = require("../models/DeliveryPartner");
-
+const multer = require("multer");
+const path = require("path");
 const router = express.Router();
 const JWT_SECRET = "mysecretkey";
+
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, "uploads/"),
+    filename: (req, file, cb) =>
+        cb(null, Date.now() + path.extname(file.originalname))
+});
+
+const upload = multer({ storage });
+
+module.exports = upload;
 // Register Delivery Partner
 router.post("/register", async (req, res) => {
     try {
@@ -64,5 +76,40 @@ router.post("/login", async (req, res) => {
     }
 });
 
+/* ---------------- GET PARTNER PROFILE ---------------- */
+router.get("/profile/:id", async (req, res) => {
+    try {
+        const partner = await DeliveryPartner.findById(req.params.id);
+        res.json({ success: true, partner });
+    } catch (err) {
+        res.status(500).json({ msg: "Server error" });
+    }
+});
+
+/* ---------------- UPDATE PARTNER PROFILE ---------------- */
+router.put("/update/:id", upload.single("image"), async (req, res) => {
+    try {
+        const updates = {
+            name: req.body.name,
+            phone: req.body.phone,
+            vehicleType: req.body.vehicleType
+        };
+
+        if (req.file) {
+            updates.image = req.file.filename;
+        }
+
+        const partner = await DeliveryPartner.findByIdAndUpdate(
+            req.params.id,
+            updates,
+            { new: true }
+        );
+
+        res.json({ success: true, partner });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ msg: "Update failed" });
+    }
+});
 
 module.exports = router;

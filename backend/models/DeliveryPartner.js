@@ -5,6 +5,7 @@ const DeliveryPartnerSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     phone: { type: String },
+    image: String,
     vehicleType: { type: String }, // bike, scooter, car
     isAvailable: { type: Boolean, default: true },
     activeOrderId: {
