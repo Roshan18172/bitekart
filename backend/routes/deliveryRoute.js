@@ -8,14 +8,22 @@ router.get("/available-orders", async (req, res) => {
     try {
         const orders = await Order.find({
             status: "ready_for_pickup",
-            deliveryPartnerId: null
-        }).sort({ createdAt: 1 });
+            $or: [
+                { deliveryPartnerId: null },
+                { deliveryPartnerId: { $exists: false } }
+            ]
+        })
+            .populate("userId", "name phone address")
+            .sort({ createdAt: 1 });
 
         res.json({ success: true, orders });
+
     } catch (err) {
+        console.error("AVAILABLE ORDERS ERROR:", err);
         res.status(500).json({ msg: "Server error" });
     }
 });
+
 
 router.put("/accept-order", async (req, res) => {
     try {
@@ -95,13 +103,19 @@ router.put("/update-status/:orderId", async (req, res) => {
 });
 
 router.get("/active-order/:partnerId", async (req, res) => {
-    const order = await Order.findOne({
-        deliveryPartnerId: req.params.partnerId,
-        status: { $ne: "delivered" }
-    });
+    try {
+        const order = await Order.findOne({
+            deliveryPartnerId: req.params.partnerId,
+            status: { $ne: "delivered" }
+        }).populate("userId", "name phone address");
 
-    res.json(order);
+        res.json(order);
+    } catch (err) {
+        console.error("ACTIVE ORDER ERROR:", err);
+        res.status(500).json({ msg: "Server error" });
+    }
 });
+
 
 router.post("/assign-order", async (req, res) => {
     try {

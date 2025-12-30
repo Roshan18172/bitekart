@@ -53,6 +53,11 @@ const DeliveryTasks = () => {
                     <h5>Active Order</h5>
                     <p>Status: <strong>{activeOrder.status}</strong></p>
 
+                    {/* <p><strong>Status:</strong> {activeOrder.status}</p> */}
+                    <p><strong>Customer:</strong> {activeOrder.userId?.name}</p>
+                    <p><strong>Phone:</strong> {activeOrder.userId?.phone}</p>
+                    <p><strong>Address:</strong> {activeOrder.userId?.address}</p>
+
                     {activeOrder.status === "assigned" && (
                         <button onClick={() => updateStatus("picked_up")} className="btn btn-warning">
                             Picked Up </button>
@@ -85,6 +90,11 @@ const DeliveryTasks = () => {
                         <div className="card p-3 mb-2" key={order._id}>
                             <p>Order ID: {order._id}</p>
                             <p>Total: ₹{order.total}</p>
+                            <p><strong>Customer:</strong> {order.userId?.name || "N/A"}</p>
+                            <p><strong>Phone:</strong> {order.userId?.phone || "N/A"}</p>
+                            <p><strong>Address:</strong> {order.userId?.address || "N/A"}</p>
+
+                            <p><strong>Total:</strong> ₹{order.total}</p>
 
                             <button
                                 className="btn btn-primary"
