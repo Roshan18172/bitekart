@@ -19,9 +19,25 @@ const TrackOrder = () => {
         }
     };
 
-    const steps = ["Accepted", "Cooking", "Out for Delivery", "Delivered"];
+    const steps = ["Accepted", "Cooking", "Picked Up", "Out for Delivery", "Delivered"];
 
-    const getStatusIndex = () => steps.indexOf(order?.status);
+    const statusMap = {
+        accepted: 0,
+
+        cooking: 1,
+        ready_for_pickup: 1,
+
+        assigned: 1,
+
+        picked_up: 2,          // 🟡 NEW STEP
+        out_for_delivery: 3,
+        reached_location: 3,
+
+        delivered: 4
+    };
+
+    const getStatusIndex = () => statusMap[order?.status] ?? -1;
+    // const getStatusIndex = () => steps.indexOf(order?.status);
 
     if (!order) {
         return (

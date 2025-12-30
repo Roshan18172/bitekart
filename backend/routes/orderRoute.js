@@ -85,10 +85,21 @@ router.get("/user/:userId", async (req, res) => {
 /* ------------------- GET SINGLE ORDER ------------------- */
 router.get("/:orderId", async (req, res) => {
     try {
-        const order = await Order.findById(req.params.orderId);
-        res.json(order);
+        const order = await Order.findById(req.params.orderId)
+            .populate("deliveryPartnerId", "name phone");
+
+        if (!order) {
+            return res.status(404).json({ msg: "Order not found" });
+        }
+
+        res.json({
+            ...order.toObject(),
+            deliveryPartner: order.deliveryPartnerId
+        });
+
     } catch (err) {
-        res.status(500).json({ msg: "Failed to fetch order" });
+        console.error(err);
+        res.status(500).json({ msg: "Server error" });
     }
 });
 
