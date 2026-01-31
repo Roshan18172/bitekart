@@ -2,6 +2,7 @@ const express = require("express");
 const Order = require("../models/Order");
 const Cart = require("../models/Cart");
 const User = require("../models/User");
+const Restaurant = require("../models/Restaurant")
 const router = express.Router();
 
 /* ------------------- CREATE ORDER ------------------- */
@@ -121,5 +122,49 @@ router.put("/cancel/:orderId", async (req, res) => {
         res.status(500).json({ msg: "Server error" });
     }
 });
+
+router.post("/rate", async (req, res) => {
+    try {
+        const { orderId, rating } = req.body;
+
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).json({ msg: "Order not found" });
+        }
+
+        if (order.status !== "delivered") {
+            return res.status(400).json({ msg: "Order not delivered yet" });
+        }
+
+        if (order.isRated) {
+            return res.status(400).json({ msg: "Already rated" });
+        }
+
+        // Save order rating
+        order.rating = rating;
+        order.isRated = true;
+        await order.save();
+
+        // Update restaurant rating
+        const restaurant = await Restaurant.findById(order.restaurantId);
+
+        if (restaurant) {
+            const totalRating =
+                restaurant.rating * restaurant.ratingCount + rating;
+
+            restaurant.ratingCount += 1;
+            restaurant.rating = totalRating / restaurant.ratingCount;
+
+            await restaurant.save();
+        }
+
+        res.json({ success: true, msg: "Rating submitted" });
+
+    } catch (err) {
+        console.error("RATING ERROR:", err);
+        res.status(500).json({ msg: "Server error" });
+    }
+});
+
 
 module.exports = router;

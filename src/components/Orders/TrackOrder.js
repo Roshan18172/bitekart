@@ -5,6 +5,10 @@ import axios from "axios";
 const TrackOrder = () => {
     const { orderId } = useParams();
     const [order, setOrder] = useState(null);
+    const [rating, setRating] = useState(0);
+    const [hover, setHover] = useState(0);
+    const [rated, setRated] = useState(false);
+
 
     useEffect(() => {
         fetchOrder();
@@ -14,6 +18,7 @@ const TrackOrder = () => {
         try {
             const res = await axios.get(`http://localhost:5000/api/orders/${orderId}`);
             setOrder(res.data);
+            setRated(res.data.isRated || false);
         } catch (error) {
             console.error("TRACK ORDER ERROR:", error);
         }
@@ -29,7 +34,7 @@ const TrackOrder = () => {
 
         assigned: 1,
 
-        picked_up: 2,          // 🟡 NEW STEP
+        picked_up: 2,
         out_for_delivery: 3,
         reached_location: 3,
 
@@ -38,6 +43,20 @@ const TrackOrder = () => {
 
     const getStatusIndex = () => statusMap[order?.status] ?? -1;
     // const getStatusIndex = () => steps.indexOf(order?.status);
+
+    const submitRating = async () => {
+        try {
+            await axios.post(`http://localhost:5000/api/orders/rate`, {
+                orderId: order._id,
+                rating
+            });
+            setRated(true);
+            alert("Thanks for rating!");
+        } catch (err) {
+            console.error(err);
+            alert("Rating failed");
+        }
+    };
 
     if (!order) {
         return (
@@ -112,6 +131,49 @@ const TrackOrder = () => {
                 <strong>Total:</strong>
                 <strong>₹{order.total}</strong>
             </div>
+
+            {/* RATING SECTION */}
+            {order.status === "delivered" && (
+                <div className="mt-4 text-center">
+                    <h5 className="fw-bold">Rate Your Order</h5>
+
+                    {rated ? (
+                        <p className="text-success">✅ You have already rated this order</p>
+                    ) : (
+                        <>
+                            <div className="d-flex justify-content-center mb-3">
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                    <span
+                                        key={star}
+                                        style={{
+                                            fontSize: "30px",
+                                            cursor: "pointer",
+                                            color:
+                                                star <= (hover || rating)
+                                                    ? "#ffc107"
+                                                    : "#ccc",
+                                        }}
+                                        onMouseEnter={() => setHover(star)}
+                                        onMouseLeave={() => setHover(0)}
+                                        onClick={() => setRating(star)}
+                                    >
+                                        ★
+                                    </span>
+                                ))}
+                            </div>
+
+                            <button
+                                className="btn btn-success"
+                                disabled={rating === 0}
+                                onClick={submitRating}
+                            >
+                                Submit Rating
+                            </button>
+                        </>
+                    )}
+                </div>
+            )}
+
 
         </div>
     );

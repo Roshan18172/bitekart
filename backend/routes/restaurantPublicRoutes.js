@@ -1,6 +1,7 @@
 const express = require("express");
 const Restaurant = require("../models/Restaurant");
 const router = express.Router();
+const Order = require("../models/Order");
 
 // Get all restaurants (public)
 router.get("/all", async (req, res) => {
@@ -24,7 +25,18 @@ router.get("/:id", async (req, res) => {
             return res.status(404).json({ success: false, message: "Restaurant not found" });
         }
 
-        res.json({ success: true, restaurant });
+        const orderCount = await Order.countDocuments({ restaurantId: restaurant._id });
+        const ratingCount = restaurant.ratingCount;
+
+        res.json({
+            restaurant,
+            stats: {
+                menuCount: restaurant.menu.length,
+                orderCount,
+                ratingCount,
+                todayEarnings: 0
+            }
+        });
 
     } catch (error) {
         console.error(error);

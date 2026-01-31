@@ -154,10 +154,16 @@ const RestaurantDashboard = () => {
 
                 <div className="col-md-3">
                     <div className="card shadow p-3 text-center">
-                        <h5>User Ratings</h5>
-                        <span className="fs-3 fw-bold text-success">{stats.ratingCount}</span>
+                        <h5>Avg Rating</h5>
+                        <span className="fs-3 fw-bold text-warning">
+                            ⭐ {restaurant.rating?.toFixed(1)}
+                        </span>
+                        {/* <p className="text-muted mb-0">
+                            ({restaurant.ratingCount} reviews)
+                        </p> */}
                     </div>
                 </div>
+
 
                 <div className="col-md-3">
                     <div className="card shadow p-3 text-center">
@@ -293,7 +299,7 @@ const RestaurantDashboard = () => {
                                 <div className="card-body">
                                     <h6 className="fw-bold">{item.name}</h6>
                                     <p className="text-muted mb-1">{item.cuisine}</p>
-                                    <p className={`badge ${ item.type === "veg" ? "bg-success" : "bg-danger" }`}>{item.type}</p>
+                                    <p className={`badge ${item.type === "veg" ? "bg-success" : "bg-danger"}`}>{item.type}</p>
                                     <p className="fw-bold">₹{item.price}</p>
                                 </div>
                             </div>

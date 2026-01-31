@@ -11,13 +11,21 @@ const MenuItemSchema = new mongoose.Schema({
 
 
 const RestaurantSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    phone: { type: String },
-    image: { type: String }, // store image filename
-    address: { type: String },
-    cuisine: { type: String },
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  phone: { type: String },
+  image: { type: String }, // store image filename
+  address: { type: String },
+  cuisine: { type: String },
+  rating: {
+    type: Number,
+    default: 0
+  },
+  ratingCount: {
+    type: Number,
+    default: 0
+  },
      menu: [MenuItemSchema]
 }, { timestamps: true });
 

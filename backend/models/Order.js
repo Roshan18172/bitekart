@@ -51,6 +51,16 @@ const OrderSchema = new mongoose.Schema({
 
     paymentMethod: String,
 
+    rating: {
+        type: Number,
+        min: 1,
+        max: 5
+    },
+    isRated: {
+        type: Boolean,
+        default: false
+    },
+
     createdAt: { type: Date, default: Date.now }
 });
 

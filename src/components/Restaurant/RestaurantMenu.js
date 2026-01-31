@@ -14,7 +14,7 @@ const RestaurantMenu = () => {
       const res = await fetch(`http://localhost:5000/api/public/restaurants/${id}`);
       const data = await res.json();
 
-      if (data.success) {
+      
         setRestaurant(data.restaurant);
 
         const initialQty = {};
@@ -30,7 +30,7 @@ const RestaurantMenu = () => {
         });
 
         setQuantities(initialQty);
-      }
+      
     };
 
     loadRestaurant();
