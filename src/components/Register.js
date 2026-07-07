@@ -3,6 +3,7 @@ import axios from "axios";
 import "./styles..css";
 
 const Register = () => {
+    const apiBaseUrl = "https://bitekart-backend-d7yr.onrender.com"
     const [form, setForm] = useState({
         name: "",
         email: "",
@@ -27,18 +28,18 @@ const Register = () => {
 
             // SELECT ROUTE BY ROLE
             if (form.role === "customer") {
-                apiUrl = "http://localhost:5000/api/auth/users/register";
+                apiUrl = `${apiBaseUrl}/api/auth/users/register`;
                 dataToSend.phone = "";   // you can collect phone field if needed
                 dataToSend.address = "";
             }
             else if (form.role === "restaurant_owner") {
-                apiUrl = "http://localhost:5000/api/auth/restaurants/register";
+                apiUrl = `${apiBaseUrl}/api/auth/restaurants/register`;
                 dataToSend.phone = "";
                 dataToSend.address = "";
                 dataToSend.cuisine = "";
             }
             else if (form.role === "delivery") {
-                apiUrl = "http://localhost:5000/api/auth/delivery/register";
+                apiUrl = `${apiBaseUrl}/api/auth/delivery/register`;
                 dataToSend.phone = "";
                 dataToSend.vehicleType = "";
             }
@@ -50,10 +51,10 @@ const Register = () => {
             console.log("RESPONSE:", res.data);
 
             // Save Token
-            localStorage.setItem("token", res.data.token);
-            localStorage.setItem("user", JSON.stringify(res.data));
+            // localStorage.setItem("token", res.data.token);
+            // localStorage.setItem("user", JSON.stringify(res.data));
 
-            window.location.href = "/login";
+            window.location.href = "/login"; // Redirect to login page
         }
         catch (err) {
             console.error("REGISTER ERROR:", err);

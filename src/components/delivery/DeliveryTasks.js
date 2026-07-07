@@ -3,20 +3,21 @@ import axios from "axios";
 
 const DeliveryTasks = () => {
     const partnerId = localStorage.getItem("partnerId");
+    const apiBaseUrl = "https://bitekart-backend-d7yr.onrender.com"
 
     const [availableOrders, setAvailableOrders] = useState([]);
     const [activeOrder, setActiveOrder] = useState(null);
 
     const fetchOrders = async () => {
         const res = await axios.get(
-            `http://localhost:5000/api/delivery/available-orders`
+            `${apiBaseUrl}/api/delivery/available-orders`
         );
         setAvailableOrders(res.data.orders);
     };
 
     const fetchActiveOrder = async () => {
         const res = await axios.get(
-            `http://localhost:5000/api/delivery/active-order/${partnerId}`
+            `${apiBaseUrl}/api/delivery/active-order/${partnerId}`
         );
         setActiveOrder(res.data);
     };
@@ -24,11 +25,12 @@ const DeliveryTasks = () => {
     useEffect(() => {
         fetchOrders();
         fetchActiveOrder();
+        //eslint-disable-next-line
     }, []);
 
     const acceptOrder = async (orderId) => {
         await axios.put(
-            `http://localhost:5000/api/delivery/accept-order`,
+            `${apiBaseUrl}/api/delivery/accept-order`,
             { orderId, partnerId }
         );
         fetchActiveOrder();
@@ -37,7 +39,7 @@ const DeliveryTasks = () => {
 
     const updateStatus = async (status) => {
         await axios.put(
-            `http://localhost:5000/api/delivery/update-status/${activeOrder._id}`,
+            `${apiBaseUrl}/api/delivery/update-status/${activeOrder._id}`,
             { status }
         );
         fetchActiveOrder();

@@ -3,6 +3,7 @@ import axios from "axios";
 
 const DeliveryPartnerDashboard = () => {
     const partnerId = localStorage.getItem("partnerId");
+    const apiBaseUrl = "https://bitekart-backend-d7yr.onrender.com"
 
     const [partner, setPartner] = useState(null);
     const [earnings, setEarnings] = useState(0);
@@ -20,11 +21,12 @@ const DeliveryPartnerDashboard = () => {
     useEffect(() => {
         fetchProfile();
         fetchEarnings();
+        //eslint-disable-next-line
     }, []);
 
     const fetchProfile = async () => {
         const res = await axios.get(
-            `http://localhost:5000/api/auth/deliveries/profile/${partnerId}`
+            `${apiBaseUrl}/api/auth/deliveries/profile/${partnerId}`
         );
         setPartner(res.data.partner);
 
@@ -35,12 +37,12 @@ const DeliveryPartnerDashboard = () => {
             image: null
         });
 
-        setPreview(`http://localhost:5000/uploads/${res.data.partner.image}`);
+        setPreview(`${apiBaseUrl}/uploads/${res.data.partner.image}`);
     };
 
     const fetchEarnings = async () => {
         const res = await axios.get(
-            `http://localhost:5000/api/delivery/earnings/${partnerId}`
+            `${apiBaseUrl}/api/delivery/earnings/${partnerId}`
         );
         setEarnings(res.data.earnings);
     };
@@ -53,7 +55,7 @@ const DeliveryPartnerDashboard = () => {
         if (editData.image) formData.append("image", editData.image);
 
         await axios.put(
-            `http://localhost:5000/api/auth/deliveries/update/${partnerId}`,
+            `${apiBaseUrl}/api/auth/deliveries/update/${partnerId}`,
             formData
         );
 

@@ -3,6 +3,7 @@ import axios from "axios";
 
 const MenuManager = () => {
     const restaurantId = localStorage.getItem("restaurantId");
+    const apiBaseUrl = "https://bitekart-backend-d7yr.onrender.com"
 
     // MISSING — now added
     //eslint-disable-next-line
@@ -31,7 +32,7 @@ const MenuManager = () => {
         const fetchRestaurant = async () => {
             try {
                 const res = await axios.get(
-                    `http://localhost:5000/api/auth/restaurants/${restaurantId}`
+                    `${apiBaseUrl}/api/auth/restaurants/${restaurantId}`
                 );
 
                 // Backend may return either:
@@ -70,7 +71,7 @@ const MenuManager = () => {
 
         try {
             const res = await axios.post(
-                `http://localhost:5000/api/auth/restaurants/${restaurantId}/menu`,
+                `${apiBaseUrl}/api/auth/restaurants/${restaurantId}/menu`,
                 data,
                 { headers: { "Content-Type": "multipart/form-data" } }
             );
@@ -106,7 +107,7 @@ const MenuManager = () => {
 
         try {
             const res = await axios.put(
-                `http://localhost:5000/api/auth/restaurants/${restaurantId}/menu/${editItem._id}`,
+                `${apiBaseUrl}/api/auth/restaurants/${restaurantId}/menu/${editItem._id}`,
                 data
             );
 
@@ -122,7 +123,7 @@ const MenuManager = () => {
     const handleDelete = async () => {
         try {
             await axios.delete(
-                `http://localhost:5000/api/auth/restaurants/${restaurantId}/menu/${deleteItemId}`
+                `${apiBaseUrl}/api/auth/restaurants/${restaurantId}/menu/${deleteItemId}`
             );
 
             setMenu(menu.filter((item) => item._id !== deleteItemId));

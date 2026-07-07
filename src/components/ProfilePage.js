@@ -4,12 +4,13 @@ import axios from "axios";
 const ProfilePage = () => {
     const [user, setUser] = useState(null);
     const [editData, setEditData] = useState({});
+    const apiBaseUrl = "https://bitekart-backend-d7yr.onrender.com"
     
     useEffect(() => {
         const fetchUser = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const res = await axios.get("http://localhost:5000/api/auth/users/profile", {
+                const res = await axios.get(`${apiBaseUrl}/api/auth/users/profile`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setUser(res.data);
@@ -30,7 +31,7 @@ const ProfilePage = () => {
         try {
             const token = localStorage.getItem("token");
 
-            const res = await axios.put("http://localhost:5000/api/auth/users/update", editData, {
+            const res = await axios.put(`${apiBaseUrl}/api/auth/users/update`, editData, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 

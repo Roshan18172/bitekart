@@ -6,10 +6,11 @@ const Cart = () => {
   const userId = localStorage.getItem("userId");
   const [cart, setCart] = useState(null);
   const navigate = useNavigate();
+  const apiBaseUrl = "https://bitekart-backend-d7yr.onrender.com"
 
   // Fetch cart
   const loadCart = async () => {
-    const res = await axios.get(`http://localhost:5000/api/cart/${userId}`);
+    const res = await axios.get(`${apiBaseUrl}/api/cart/${userId}`);
     setCart(res.data);
   };
 
@@ -20,7 +21,7 @@ const Cart = () => {
 
   // Increase or decrease item qty
   const updateQuantity = async (itemId, newQty) => {
-    await axios.post("http://localhost:5000/api/cart/update", {
+    await axios.post(`${apiBaseUrl}/api/cart/update`, {
       userId,
       itemId,
       quantity: newQty, // backend handles removal if qty <= 0

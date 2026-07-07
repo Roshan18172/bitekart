@@ -8,12 +8,13 @@ const CheckOut = () => {
   const [cart, setCart] = useState(null);
   const [user, setUser] = useState(null);
   const [restaurant, setRestaurant] = useState(null);
+  const apiBaseUrl = "https://bitekart-backend-d7yr.onrender.com"
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         // Fetch cart
-        const cartRes = await axios.get(`http://localhost:5000/api/cart/${userId}`);
+        const cartRes = await axios.get(`${apiBaseUrl}/api/cart/${userId}`);
         setCart(cartRes.data);
 
         // Fetch user info
@@ -23,7 +24,7 @@ const CheckOut = () => {
         // Fetch restaurant info (assume all items are from same restaurant)
         if (cartRes.data.items.length > 0) {
           const restaurantId = cartRes.data.items[0].restaurantId;
-          const resRes = await axios.get(`http://localhost:5000/api/auth/restaurants/${restaurantId}`);
+          const resRes = await axios.get(`${apiBaseUrl}/api/auth/restaurants/${restaurantId}`);
           setRestaurant(resRes.data);
         }
       } catch (err) {
@@ -36,7 +37,7 @@ const CheckOut = () => {
 
   const placeOrder = async () => {
   try {
-    const res = await axios.post("http://localhost:5000/api/orders/create", {
+    const res = await axios.post(`${apiBaseUrl}/api/orders/create`, {
       userId,
       items: cart.items,
       subtotal,

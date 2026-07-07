@@ -6,6 +6,7 @@ const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [userType, setUserType] = useState(""); // Added userType
   const navigate = useNavigate();
+  const apiBaseUrl = "https://bitekart-backend-d7yr.onrender.com"
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -23,13 +24,13 @@ const Login = () => {
 
     // Choose correct URL based on type
     if (userType === "user")
-      url = "http://localhost:5000/api/auth/users/login";
+      url = `${apiBaseUrl}/api/auth/users/login`;
 
     if (userType === "restaurant")
-      url = "http://localhost:5000/api/auth/restaurants/login";
+      url = `${apiBaseUrl}/api/auth/restaurants/login`;
 
     if (userType === "delivery")
-      url = "http://localhost:5000/api/auth/deliveries/login";
+      url = `${apiBaseUrl}/api/auth/deliveries/login`;
 
     try {
       const res = await axios.post(url, form);

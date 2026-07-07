@@ -6,12 +6,13 @@ const RestaurantMenu = () => {
   const { id } = useParams();
   const [restaurant, setRestaurant] = useState(null);
   const [quantities, setQuantities] = useState({});
+  const apiBaseUrl = "https://bitekart-backend-d7yr.onrender.com"
 
   const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     const loadRestaurant = async () => {
-      const res = await fetch(`http://localhost:5000/api/public/restaurants/${id}`);
+      const res = await fetch(`${apiBaseUrl}/api/public/restaurants/${id}`);
       const data = await res.json();
 
       
@@ -23,7 +24,7 @@ const RestaurantMenu = () => {
         });
 
         // Load user cart and sync quantities
-        const cartRes = await axios.get(`http://localhost:5000/api/cart/${userId}`);
+        const cartRes = await axios.get(`${apiBaseUrl}/api/cart/${userId}`);
 
         cartRes.data?.items?.forEach(ci => {
           initialQty[ci.itemId] = ci.quantity;
@@ -38,7 +39,7 @@ const RestaurantMenu = () => {
 
   // Add item to cart
   const addToCart = async (item) => {
-    await axios.post("http://localhost:5000/api/cart/add", {
+    await axios.post(`${apiBaseUrl}/api/cart/add`, {
       userId,
       itemId: item._id,
       name: item.name,
@@ -56,7 +57,7 @@ const RestaurantMenu = () => {
 
     setQuantities(prev => ({ ...prev, [itemId]: updatedQty }));
 
-    await axios.post("http://localhost:5000/api/cart/update", {
+    await axios.post(`${apiBaseUrl}/api/cart/update`, {
       userId,
       itemId,
       quantity: updatedQty
@@ -69,7 +70,7 @@ const RestaurantMenu = () => {
 
     setQuantities(prev => ({ ...prev, [itemId]: updatedQty }));
 
-    await axios.post("http://localhost:5000/api/cart/update", {
+    await axios.post(`${apiBaseUrl}/api/cart/update`, {
       userId,
       itemId,
       quantity: updatedQty
@@ -90,7 +91,7 @@ const RestaurantMenu = () => {
           <div key={item._id} className="col-md-4 mb-4">
             <div className="card shadow-sm h-100">
               <img
-                src={`http://localhost:5000/uploads/${item.image}`}
+                src={`${apiBaseUrl}/uploads/${item.image}`}
                 className="card-img-top"
                 alt={item.name}
                 style={{ height: "200px", objectFit: "cover" }}

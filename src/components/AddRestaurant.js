@@ -33,6 +33,7 @@ const AddRestaurant = () => {
         ]);
     };
 
+    const apiBaseUrl = "https://bitekart-backend-d7yr.onrender.com"
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -62,7 +63,7 @@ const AddRestaurant = () => {
         });
 
         try {
-            const res = await axios.post("http://localhost:5000/api/restaurants/add", data, {
+            const res = await axios.post(`${apiBaseUrl}/api/restaurants/add`, data, {
                 headers: { "Content-Type": "multipart/form-data" }
             });
 

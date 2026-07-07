@@ -6,12 +6,13 @@ const MyOrders = () => {
     const [orders, setOrders] = useState([]);
     const userId = localStorage.getItem("userId");
     const navigate = useNavigate();
+    const apiBaseUrl = "https://bitekart-backend-d7yr.onrender.com"
 
     useEffect(() => {
         const loadOrders = async () => {
             try {
                 const res = await axios.get(
-                    `http://localhost:5000/api/orders/user/${userId}`
+                    `${apiBaseUrl}/api/orders/user/${userId}`
                 );
                 setOrders(res.data);
             } catch (error) {
@@ -27,7 +28,7 @@ const MyOrders = () => {
         if (!window.confirm("Are you sure you want to cancel this order?")) return;
 
         try {
-            await axios.delete(`http://localhost:5000/api/orders/cancel/${orderId}`);
+            await axios.delete(`${apiBaseUrl}/api/orders/cancel/${orderId}`);
 
             // Remove from UI instantly
             setOrders((prev) => prev.filter((order) => order._id !== orderId));

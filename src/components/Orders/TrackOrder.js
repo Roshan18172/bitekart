@@ -8,15 +8,17 @@ const TrackOrder = () => {
     const [rating, setRating] = useState(0);
     const [hover, setHover] = useState(0);
     const [rated, setRated] = useState(false);
+    const apiBaseUrl = "https://bitekart-backend-d7yr.onrender.com"
 
 
     useEffect(() => {
         fetchOrder();
+        //eslint-disable-next-line
     }, []);
 
     const fetchOrder = async () => {
         try {
-            const res = await axios.get(`http://localhost:5000/api/orders/${orderId}`);
+            const res = await axios.get(`${apiBaseUrl}/api/orders/${orderId}`);
             setOrder(res.data);
             setRated(res.data.isRated || false);
         } catch (error) {
@@ -46,7 +48,7 @@ const TrackOrder = () => {
 
     const submitRating = async () => {
         try {
-            await axios.post(`http://localhost:5000/api/orders/rate`, {
+            await axios.post(`${apiBaseUrl}/api/orders/rate`, {
                 orderId: order._id,
                 rating
             });
@@ -110,6 +112,7 @@ const TrackOrder = () => {
                 <iframe
                     src="https://maps.google.com/maps?q=India&t=&z=13&ie=UTF8&iwloc=&output=embed"
                     width="100%" height="300"
+                    title="Live Delivery Map"
                     className="rounded" style={{ border: 0 }}
                     allowFullScreen loading="lazy"></iframe>
             </div>

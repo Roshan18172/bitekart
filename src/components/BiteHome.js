@@ -6,11 +6,12 @@ import Footer from "./Footer";
 const BiteHome = () => {
   const [restaurants, setRestaurants] = useState([]);
   const navigate = useNavigate();
+  const apiBaseUrl = "https://bitekart-backend-d7yr.onrender.com"
 
   useEffect(() => {
     const loadRestaurants = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/public/restaurants/all");
+        const res = await axios.get(`${apiBaseUrl}/api/public/restaurants/all`);
         setRestaurants(res.data.restaurants);
       } catch (err) {
         console.error("Error loading restaurants:", err);
@@ -55,7 +56,7 @@ const BiteHome = () => {
               onClick={() => openRestaurant(res._id)}
             >
               <img
-                src={`http://localhost:5000/uploads/${res.image}`}
+                src={`${apiBaseUrl}/uploads/${res.image}`}
                 className="card-img-top"
                 alt={res.name}
                 style={{ height: "250px", objectFit: "cover" }}

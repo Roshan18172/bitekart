@@ -5,11 +5,12 @@ const RestaurantOrders = () => {
     const restaurantId = localStorage.getItem("restaurantId");
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const apiBaseUrl = "https://bitekart-backend-d7yr.onrender.com"
 
     const fetchOrders = async () => {
         try {
             const res = await axios.get(
-                `http://localhost:5000/api/restaurant-orders/${restaurantId}`
+                `${apiBaseUrl}/api/restaurant-orders/${restaurantId}`
             );
             setOrders(res.data);
             setLoading(false);
@@ -21,12 +22,13 @@ const RestaurantOrders = () => {
 
     useEffect(() => {
         fetchOrders();
+        //eslint-disable-next-line
     }, []);
 
     const updateStatus = async (orderId, action) => {
         try {
             await axios.put(
-                `http://localhost:5000/api/restaurant-orders/${action}/${orderId}`
+                `${apiBaseUrl}/api/restaurant-orders/${action}/${orderId}`
             );
             fetchOrders();
         } catch (err) {

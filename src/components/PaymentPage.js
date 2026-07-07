@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 const PaymentPage = () => {
   const { orderId } = useParams();
   const navigate = useNavigate();
+  const apiBaseUrl = "https://bitekart-backend-d7yr.onrender.com"
 
   const [order, setOrder] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("card");
@@ -13,7 +14,7 @@ const PaymentPage = () => {
     const loadOrderData = async () => {
       try {
         const orderRes = await axios.get(
-          `http://localhost:5000/api/orders/${orderId}`
+          `${apiBaseUrl}/api/orders/${orderId}`
         );
         setOrder(orderRes.data);
       } catch (error) {
@@ -26,7 +27,7 @@ const PaymentPage = () => {
 
   const handlePayment = async () => {
     try {
-      await axios.post("http://localhost:5000/api/orders/pay", {
+      await axios.post(`${apiBaseUrl}/api/orders/pay`, {
         orderId,
         paymentMethod,
       });

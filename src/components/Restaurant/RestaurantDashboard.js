@@ -4,6 +4,7 @@ import axios from "axios";
 
 const RestaurantDashboard = () => {
     const [restaurant, setRestaurant] = useState(null);
+    const apiBaseUrl = "https://bitekart-backend-d7yr.onrender.com"
     const [stats, setStats] = useState({
         menuCount: 0,
         orderCount: 0,
@@ -32,7 +33,7 @@ const RestaurantDashboard = () => {
         const fetchData = async () => {
             try {
                 const res = await axios.get(
-                    `http://localhost:5000/api/auth/restaurants/dashboard/${restaurantId}`
+                    `${apiBaseUrl}/api/auth/restaurants/dashboard/${restaurantId}`
                 );
 
                 setRestaurant(res.data.restaurant);
@@ -51,7 +52,7 @@ const RestaurantDashboard = () => {
                 });
 
                 setPreviewImage(
-                    `http://localhost:5000/uploads/${res.data.restaurant.image}`
+                    `${apiBaseUrl}/uploads/${res.data.restaurant.image}`
                 );
             } catch (error) {
                 console.error("Dashboard Load Error:", error);
@@ -88,7 +89,7 @@ const RestaurantDashboard = () => {
             }
 
             const response = await axios.put(
-                `http://localhost:5000/api/auth/restaurants/update/${restaurantId}`,
+                `${apiBaseUrl}/api/auth/restaurants/update/${restaurantId}`,
                 formData,
                 {
                     headers: { "Content-Type": "multipart/form-data" },
