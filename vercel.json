@@ -3,9 +3,6 @@
         "frontend": {
             "root": ".",
             "framework": "create-react-app"
-        },
-        "backend": {
-            "root": "backend"
         }
     },
     "rewrites": [
